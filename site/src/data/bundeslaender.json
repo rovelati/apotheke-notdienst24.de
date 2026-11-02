@@ -1,0 +1,130 @@
+[
+  {
+    "code": "BW",
+    "name": "Baden-Württemberg",
+    "slug": "baden-wuerttemberg",
+    "capital": "Stuttgart",
+    "lat": 48.6616,
+    "lon": 9.3501
+  },
+  {
+    "code": "BY",
+    "name": "Bayern",
+    "slug": "bayern",
+    "capital": "München",
+    "lat": 48.7904,
+    "lon": 11.4979
+  },
+  {
+    "code": "BE",
+    "name": "Berlin",
+    "slug": "berlin",
+    "capital": "Berlin",
+    "lat": 52.52,
+    "lon": 13.405
+  },
+  {
+    "code": "BB",
+    "name": "Brandenburg",
+    "slug": "brandenburg",
+    "capital": "Potsdam",
+    "lat": 52.4125,
+    "lon": 12.5316
+  },
+  {
+    "code": "HB",
+    "name": "Bremen",
+    "slug": "bremen",
+    "capital": "Bremen",
+    "lat": 53.0793,
+    "lon": 8.8017
+  },
+  {
+    "code": "HH",
+    "name": "Hamburg",
+    "slug": "hamburg",
+    "capital": "Hamburg",
+    "lat": 53.5511,
+    "lon": 9.9937
+  },
+  {
+    "code": "HE",
+    "name": "Hessen",
+    "slug": "hessen",
+    "capital": "Wiesbaden",
+    "lat": 50.6521,
+    "lon": 9.1624
+  },
+  {
+    "code": "MV",
+    "name": "Mecklenburg-Vorpommern",
+    "slug": "mecklenburg-vorpommern",
+    "capital": "Schwerin",
+    "lat": 53.6127,
+    "lon": 12.4296
+  },
+  {
+    "code": "NI",
+    "name": "Niedersachsen",
+    "slug": "niedersachsen",
+    "capital": "Hannover",
+    "lat": 52.6367,
+    "lon": 9.8451
+  },
+  {
+    "code": "NW",
+    "name": "Nordrhein-Westfalen",
+    "slug": "nordrhein-westfalen",
+    "capital": "Düsseldorf",
+    "lat": 51.4332,
+    "lon": 7.6616
+  },
+  {
+    "code": "RP",
+    "name": "Rheinland-Pfalz",
+    "slug": "rheinland-pfalz",
+    "capital": "Mainz",
+    "lat": 49.9134,
+    "lon": 7.4542
+  },
+  {
+    "code": "SL",
+    "name": "Saarland",
+    "slug": "saarland",
+    "capital": "Saarbrücken",
+    "lat": 49.3964,
+    "lon": 7.023
+  },
+  {
+    "code": "SN",
+    "name": "Sachsen",
+    "slug": "sachsen",
+    "capital": "Dresden",
+    "lat": 51.1045,
+    "lon": 13.2017
+  },
+  {
+    "code": "ST",
+    "name": "Sachsen-Anhalt",
+    "slug": "sachsen-anhalt",
+    "capital": "Magdeburg",
+    "lat": 51.9503,
+    "lon": 11.6923
+  },
+  {
+    "code": "SH",
+    "name": "Schleswig-Holstein",
+    "slug": "schleswig-holstein",
+    "capital": "Kiel",
+    "lat": 54.2194,
+    "lon": 9.6961
+  },
+  {
+    "code": "TH",
+    "name": "Thüringen",
+    "slug": "thueringen",
+    "capital": "Erfurt",
+    "lat": 50.8522,
+    "lon": 11.0189
+  }
+]

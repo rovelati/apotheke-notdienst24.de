@@ -1,0 +1,93 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Impressum (§ 5 DDG) | Apotheke-Notdienst24.de"
+  description="Rechtliche Angaben und Impressum gemäß § 5 Digitale-Dienste-Gesetz (DDG) für Apotheke-Notdienst24.de."
+  breadcrumbs={[{ name: "Impressum", href: "/impressum/" }]}
+>
+  <div class="wrap my-4 legal-container">
+    <h1>Impressum</h1>
+    <p class="legal-sub">Angaben gemäß § 5 Digitale-Dienste-Gesetz (DDG)</p>
+
+    <div class="legal-box my-3">
+      <h2>Dienstanbieter</h2>
+      <p>
+        <strong>Apotheke-Notdienst24</strong><br />
+        E-Mail: <a href="mailto:info@apotheke-notdienst24.de">info@apotheke-notdienst24.de</a><br />
+        Webseite: <a href="https://www.apotheke-notdienst24.de">www.apotheke-notdienst24.de</a>
+      </p>
+
+      <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+      <p>
+        Redaktion Apotheke-Notdienst24<br />
+        E-Mail: <a href="mailto:info@apotheke-notdienst24.de">info@apotheke-notdienst24.de</a>
+      </p>
+
+      <h2>EU-Streitschlichtung</h2>
+      <p>
+        Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr</a>.<br />
+        Unsere E-Mail-Adresse finden Sie oben im Impressum.
+      </p>
+
+      <h2>Verbraucherstreitbeilegung / Universalschlichtungsstelle</h2>
+      <p>
+        Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+      </p>
+
+      <h2>Haftung für Inhalte</h2>
+      <p>
+        Als Diensteanbieter sind wir gemäß § 7 Abs. 1 DDG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 DDG sind wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen, die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unberührt.
+      </p>
+
+      <h2>Wichtiger Hinweis zum Apotheken-Notdienst</h2>
+      <p>
+        Apotheke-Notdienst24.de ist ein unabhängiges Auskunftsportal und keine offizielle Stelle einer Landesapothekerkammer oder der Bundesapothekerkammer (ABDA). Alle Dienstzeiten und Angaben zu Notdienstapotheken erfolgen ohne Gewähr. Kurzfristige Änderungen bei den Notdienstturnussen durch Krankheitsausfälle oder behördliche Anordnungen sind möglich. Im Zweifelsfall oder vor einem langen Anfahrtsweg wird empfohlen, die angegebene Apotheke vorab telefonisch zu kontaktieren. In lebensbedrohlichen Notfällen rufen Sie bitte direkt den Notruf <strong>112</strong> an.
+      </p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .legal-container {
+    max-width: 800px;
+  }
+  .legal-container h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin: 0 0 0.4rem;
+    color: var(--ink);
+  }
+  .legal-sub {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0 0 1.5rem;
+  }
+  .legal-box {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    line-height: 1.6;
+    color: var(--ink-secondary);
+  }
+  .legal-box h2 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 1.5rem 0 0.5rem;
+  }
+  .legal-box h2:first-child {
+    margin-top: 0;
+  }
+  .legal-box p {
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+  }
+  .legal-box a {
+    color: #dc2626;
+    text-decoration: underline;
+  }
+</style>

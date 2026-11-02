@@ -1,0 +1,384 @@
+---
+import Base from '../../../layouts/Base.astro';
+import LiveDateBadge from '../../../components/LiveDateBadge.astro';
+import PharmacyCard from '../../../components/PharmacyCard.astro';
+import PharmacyMap from '../../../components/PharmacyMap.astro';
+import AdSlot from '../../../components/AdSlot.astro';
+import bundeslaenderData from '../../../data/bundeslaender.json';
+
+export async function getStaticPaths() {
+  const allShards = import.meta.glob('../../../data/shards/*.json', { eager: true });
+  const paths: any[] = [];
+
+  for (const b of bundeslaenderData) {
+    const shardKey = `../../../data/shards/${b.slug}.json`;
+    const mod: any = allShards[shardKey];
+    const pharms: any[] = mod ? (mod.default || mod) : [];
+
+    // Group by city
+    const byCity: Record<string, any[]> = {};
+    for (const p of pharms) {
+      if (!byCity[p.ort]) byCity[p.ort] = [];
+      byCity[p.ort].push(p);
+    }
+
+    function slugify(text: string): string {
+      return text.toLowerCase()
+        .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+        .replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
+    }
+
+    for (const cityName in byCity) {
+      const citySlug = slugify(cityName);
+      const cityPharmacies = byCity[cityName];
+
+      paths.push({
+        params: {
+          bundesland: b.slug,
+          ort: citySlug
+        },
+        props: {
+          bundesland: b,
+          cityName: cityName,
+          citySlug: citySlug,
+          cityPharmacies: cityPharmacies,
+          allStatePharmacies: pharms
+        }
+      });
+    }
+  }
+
+  return paths;
+}
+
+const { bundesland, cityName, citySlug, cityPharmacies, allStatePharmacies } = Astro.props;
+
+// Haversine formula (km)
+function haversine(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
+// Compute city center
+const validLocal = cityPharmacies.filter((p: any) => p.lat && p.lon);
+const centerLat = validLocal.length > 0 ? validLocal.reduce((acc: number, p: any) => acc + p.lat, 0) / validLocal.length : bundesland.lat;
+const centerLon = validLocal.length > 0 ? validLocal.reduce((acc: number, p: any) => acc + p.lon, 0) / validLocal.length : bundesland.lon;
+
+// 20 km radius expansion algorithm (Ensures no empty results / thin content)
+const RADIUS_KM = 25;
+const expandedPharmacies: any[] = [];
+const seenIds = new Set(cityPharmacies.map((p: any) => p.id));
+
+// Add local pharmacies
+for (const p of cityPharmacies) {
+  const dist = (p.lat && p.lon) ? haversine(centerLat, centerLon, p.lat, p.lon) : 0;
+  expandedPharmacies.push({ ...p, distanceKm: dist, isLocal: true });
+}
+
+// Add nearby pharmacies from the state within radius
+for (const p of allStatePharmacies) {
+  if (seenIds.has(p.id)) continue;
+  if (!p.lat || !p.lon) continue;
+  const dist = haversine(centerLat, centerLon, p.lat, p.lon);
+  if (dist <= RADIUS_KM) {
+    seenIds.add(p.id);
+    expandedPharmacies.push({ ...p, distanceKm: dist, isLocal: false });
+  }
+}
+
+// Sort: Local pharmacies first, then by distance
+expandedPharmacies.sort((a, b) => {
+  if (a.isLocal && !b.isLocal) return -1;
+  if (!a.isLocal && b.isLocal) return 1;
+  return (a.distanceKm || 0) - (b.distanceKm || 0);
+});
+
+// Calculate active duty pharmacies
+const now = new Date();
+const activeDuty = expandedPharmacies.filter(p => {
+  if (p.isOpen24h) return true;
+  return (p.shifts || []).some((s: any) => {
+    const d = new Date(s.debut);
+    const f = new Date(s.fin);
+    return now >= d && now <= f;
+  });
+});
+
+const faqs = [
+  {
+    q: `Welche Apotheke hat in ${cityName} heute Notdienst?`,
+    a: `Aktuell sind in ${cityName} und im direkten Umkreis ${activeDuty.length} Apotheke(n) für den Notdienst eingeteilt. Die dienstbereite Notdienst-Apotheke finden Sie oben mit Adresse, Telefonnummer und 24h-Bereitschaftsstatus.`
+  },
+  {
+    q: `Gibt es in ${cityName} eine Notdienstgebühr?`,
+    a: `Ja, außerhalb der gesetzlichen Ladenöffnungszeiten (werktags ab 20:00 Uhr sowie an Sonn- und Feiertagen) fällt eine gesetzlich geregelte Notdienstgebühr von 2,50 € an (§ 6 AMPreisV). Bei dringenden Rezepten mit dem Vermerk 'noctu' entfällt diese Gebühr.`
+  },
+  {
+    q: `Wie erhalte ich nachts in ${cityName} dringend benötigte Medikamente?`,
+    a: `Die Notdienst-Apotheken in ${cityName} bedienen nachts über die Notdienstklingel am Nachtschalter. Bringen Sie bitte Ihre Versichertenkarte und Ihr Rezept mit.`
+  }
+];
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(f => ({
+    "@type": "Question",
+    "name": f.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": f.a
+    }
+  }))
+};
+---
+
+<Base
+  title={`Apotheken-Notdienst in ${cityName} heute & heute Nacht: Notdienst-Apotheke | Apotheke-Notdienst24.de`}
+  description={`Welche Apotheke hat heute in ${cityName} Notdienst? Offizielle Notdienst-Apotheken für heute Nacht, sonntags und an Feiertagen. Mit Karte, Öffnungszeiten, Telefon und Route.`}
+  breadcrumbs={[
+    { name: "Bundesländer", href: "/apotheken-notdienst/" },
+    { name: bundesland.name, href: `/apotheken-notdienst/${bundesland.slug}/` },
+    { name: cityName, href: `/apotheken-notdienst/${bundesland.slug}/${citySlug}/` }
+  ]}
+  jsonLd={faqLd}
+>
+  <div class="wrap my-4">
+    <LiveDateBadge prefix={`Notdienst-Status für ${cityName}:`} />
+
+    <div class="city-hero">
+      <span class="badge-tag">24h NOTDIENST & BEREITSCHAFT</span>
+      <h1 class="city-title">Apotheken-Notdienst in {cityName}</h1>
+      <p class="city-lead">
+        Finden Sie sofort die aktuell dienstbereite Notdienst-Apotheke in <strong>{cityName}</strong> ({bundesland.name}). 
+        Gesetzlicher 24-Stunden Notdienstplan für heute, heute Nacht und das Wochenende mit Klingel am Nachtschalter.
+      </p>
+
+      <div class="city-stats-bar">
+        <div class="stat-item">
+          <strong>{activeDuty.length}</strong>
+          <span>Jetzt im Notdienst</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <strong>{cityPharmacies.length}</strong>
+          <span>Apotheken im Stadtgebiet</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <strong>24h</strong>
+          <span>Durchgehende Notversorgung</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ad Slot -->
+    <div class="my-3">
+      <AdSlot slot="7890123456" />
+    </div>
+
+    <!-- Active Duty Pharmacies (Primary Emergency Target) -->
+    <section class="my-4">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">🔴 Aktuell dienstbereite Notapotheken ({activeDuty.length})</h2>
+          <p class="section-sub">Diese Apotheken haben jetzt geöffnet oder sind per Notdienstklingel erreichbar.</p>
+        </div>
+      </div>
+
+      <div class="cards-grid">
+        {activeDuty.map(p => (
+          <PharmacyCard pharmacy={p} />
+        ))}
+      </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="my-4">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Karte der Notdienst-Apotheken in {cityName}</h2>
+          <p class="section-sub">Interaktive Übersicht aller Notdienst- und Umkreis-Apotheken.</p>
+        </div>
+      </div>
+      <PharmacyMap pharmacies={expandedPharmacies} center={[centerLat, centerLon]} zoom={13} cityName={cityName} />
+    </section>
+
+    <!-- In-Content Ad -->
+    <div class="my-4">
+      <AdSlot slot="8901234567" />
+    </div>
+
+    <!-- All Pharmacies in this City / 25km Radius -->
+    <section class="my-4">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Alle Apotheken in {cityName} & Umgebung ({expandedPharmacies.length})</h2>
+          <p class="section-sub">Übersicht aller regulären Apotheken inklusive Notdienst-Rotationsplan.</p>
+        </div>
+      </div>
+
+      <div class="cards-grid">
+        {expandedPharmacies.map(p => (
+          <PharmacyCard pharmacy={p} />
+        ))}
+      </div>
+    </section>
+
+    <!-- Local FAQ Section -->
+    <section class="my-4 faq-section">
+      <div class="section-head">
+        <div>
+          <h2 class="section-title">Häufige Fragen zum Notdienst in {cityName}</h2>
+        </div>
+      </div>
+
+      <div class="faq-list">
+        {faqs.map(f => (
+          <details class="faq-item">
+            <summary class="faq-question">
+              <span>{f.q}</span>
+              <span class="faq-arrow">▼</span>
+            </summary>
+            <div class="faq-answer">
+              <p>{f.a}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+  </div>
+</Base>
+
+<style>
+  .city-hero {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .badge-tag {
+    display: inline-block;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 0.78rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.8rem;
+  }
+  :global([data-theme="dark"]) .badge-tag {
+    background: rgba(220, 38, 38, 0.2);
+    color: #f87171;
+  }
+  .city-title {
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    margin: 0 0 0.8rem;
+    color: var(--ink);
+  }
+  .city-lead {
+    font-size: 1.05rem;
+    color: var(--ink-secondary);
+    max-width: 720px;
+    line-height: 1.6;
+    margin: 0 0 1.5rem;
+  }
+  .city-stats-bar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: var(--surface-2);
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .stat-item strong {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #dc2626;
+  }
+  .stat-item span {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .stat-divider {
+    width: 1px;
+    height: 30px;
+    background: var(--line);
+  }
+  .section-head {
+    margin-bottom: 1.5rem;
+  }
+  .section-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0 0 0.3rem;
+  }
+  .section-sub {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: 0;
+  }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 860px;
+  }
+  .faq-item {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--ink);
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+  .faq-arrow {
+    font-size: 0.75rem;
+    color: var(--muted);
+    transition: transform 0.2s ease;
+  }
+  .faq-item[open] .faq-arrow {
+    transform: rotate(180deg);
+  }
+  .faq-answer {
+    padding: 0 18px 16px;
+    color: var(--ink-secondary);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    border-top: 1px solid var(--line-light);
+  }
+</style>

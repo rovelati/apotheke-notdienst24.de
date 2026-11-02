@@ -1,0 +1,328 @@
+---
+export interface Props {
+  pharmacy: {
+    id: string;
+    name: string;
+    slug: string;
+    strasse: string;
+    plz: string;
+    ort: string;
+    bundeslandSlug: string;
+    bundeslandCode: string;
+    lat: number | null;
+    lon: number | null;
+    telephone: string;
+    isOpen24h?: boolean;
+    googleRating?: number | null;
+    googleReviewsTotal?: number;
+    googleWebsite?: string;
+    editorialSummary?: string;
+    openingHours?: string[];
+    distanceKm?: number;
+    shifts?: Array<{
+      type: string;
+      debut: string;
+      fin: string;
+      gebuehr?: string;
+      notes: string;
+    }>;
+  };
+  showDetailLink?: boolean;
+}
+
+const { pharmacy, showDetailLink = true } = Astro.props;
+
+// Calculate current status
+const now = new Date();
+const activeShift = (pharmacy.shifts || []).find(s => {
+  const d = new Date(s.debut);
+  const f = new Date(s.fin);
+  return now >= d && now <= f;
+});
+
+const is24h = pharmacy.isOpen24h;
+const isNotdienst = is24h || Boolean(activeShift);
+
+const mapUrl = (pharmacy.lat && pharmacy.lon)
+  ? `https://www.google.com/maps/dir/?api=1&destination=${pharmacy.lat},${pharmacy.lon}`
+  : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharmacy.name + ' ' + pharmacy.strasse + ' ' + pharmacy.plz + ' ' + pharmacy.ort)}`;
+
+const hasRating = pharmacy.googleRating != null && pharmacy.googleRating > 0;
+---
+
+<div class={`card pharmacy-card ${isNotdienst ? 'is-notdienst' : ''}`}>
+  <div class="card-header">
+    <div class="status-row">
+      <div class="status-left">
+        {is24h ? (
+          <span class="badge badge-24h">
+            <span class="pulse-dot"></span> 24h Dauernd Geöffnet
+          </span>
+        ) : isNotdienst ? (
+          <span class="badge badge-notdienst">
+            <span class="pulse-dot"></span> JETZT NOTDIENST
+          </span>
+        ) : (
+          <span class="badge badge-normal">
+            Reguläre Apotheke
+          </span>
+        )}
+
+        {pharmacy.distanceKm !== undefined && (
+          <span class="badge badge-distance">
+            📍 {pharmacy.distanceKm.toFixed(1)} km entfernt
+          </span>
+        )}
+      </div>
+
+      {hasRating && (
+        <div class="rating-box" title={`Bewertung: ${pharmacy.googleRating} von 5 Sternen`}>
+          <span class="rating-star">★</span>
+          <span class="rating-val">{pharmacy.googleRating?.toFixed(1)}</span>
+          {pharmacy.googleReviewsTotal && pharmacy.googleReviewsTotal > 0 && (
+            <span class="rating-count">({pharmacy.googleReviewsTotal})</span>
+          )}
+        </div>
+      )}
+    </div>
+
+    <h3 class="pharma-name">
+      {showDetailLink ? (
+        <a href={`/apotheke/${pharmacy.slug}/`}>{pharmacy.name}</a>
+      ) : (
+        <span>{pharmacy.name}</span>
+      )}
+    </h3>
+
+    <p class="pharma-address">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+        <circle cx="12" cy="9" r="2.5"/>
+      </svg>
+      <span>{pharmacy.strasse}, {pharmacy.plz} {pharmacy.ort}</span>
+    </p>
+  </div>
+
+  {isNotdienst && (
+    <div class="notdienst-notice">
+      <span class="notice-icon">🔔</span>
+      <div class="notice-body">
+        <strong>Notdienst aktiv:</strong> Bitte klingeln Sie am Nachtschalter.
+        {activeShift?.gebuehr && <span class="notice-fee"> {activeShift.gebuehr}</span>}
+      </div>
+    </div>
+  )}
+
+  <div class="card-actions">
+    {pharmacy.telephone ? (
+      <a href={`tel:${pharmacy.telephone.replace(/\s+/g, '')}`} class="btn btn-call" aria-label={`Anrufen: ${pharmacy.telephone}`}>
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+        </svg>
+        <span>{pharmacy.telephone}</span>
+      </a>
+    ) : (
+      <a href="tel:116117" class="btn btn-call btn-call-generic">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
+        </svg>
+        <span>116 117 anrufen</span>
+      </a>
+    )}
+
+    <a href={mapUrl} target="_blank" rel="noopener noreferrer" class="btn btn-route" title="Route in Google/Apple Maps öffnen">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M9 18l6-6-6-6"/>
+      </svg>
+      <span>Route</span>
+    </a>
+  </div>
+</div>
+
+<style>
+  .pharmacy-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+  }
+  .pharmacy-card:hover {
+    border-color: var(--line-light);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+  .pharmacy-card.is-notdienst {
+    border-color: #f87171;
+    background: color-mix(in srgb, var(--surface) 97%, #ef4444);
+  }
+  .status-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 0.6rem;
+  }
+  .status-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .badge-notdienst {
+    background: #dc2626;
+    color: #ffffff;
+  }
+  .badge-24h {
+    background: var(--cross);
+    color: #ffffff;
+  }
+  .badge-normal {
+    background: var(--surface-2);
+    color: var(--muted);
+    border: 1px solid var(--line);
+  }
+  .badge-distance {
+    background: var(--surface-2);
+    color: var(--ink-secondary);
+    border: 1px solid var(--line);
+    font-size: 0.75rem;
+  }
+  .rating-box {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    background: var(--gold-bg);
+    border: 1px solid var(--gold-border);
+    padding: 2px 7px;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    font-weight: 700;
+  }
+  .rating-star {
+    color: var(--gold);
+  }
+  .rating-val {
+    color: var(--ink);
+  }
+  .rating-count {
+    color: var(--muted);
+    font-size: 0.75rem;
+  }
+  .pharma-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 0.2rem 0 0.4rem;
+  }
+  .pharma-name a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .pharma-name a:hover {
+    color: #dc2626;
+    text-decoration: underline;
+  }
+  .pharma-address {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    color: var(--ink-secondary);
+    font-size: 0.88rem;
+    margin: 0;
+    line-height: 1.4;
+  }
+  .pharma-address svg {
+    margin-top: 2px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .notdienst-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    line-height: 1.4;
+  }
+  :global([data-theme="dark"]) .notdienst-notice {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.3);
+    color: #fca5a5;
+  }
+  .notice-fee {
+    font-weight: 600;
+    opacity: 0.9;
+  }
+  .card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 0.5rem;
+  }
+  .btn-call {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #dc2626;
+    color: #ffffff;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  .btn-call:hover {
+    background: #b91c1c;
+    text-decoration: none;
+  }
+  .btn-call-generic {
+    background: #0284c7;
+  }
+  .btn-call-generic:hover {
+    background: #0369a1;
+  }
+  .btn-route {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: var(--surface-2);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  .btn-route:hover {
+    background: var(--surface-hover);
+    text-decoration: none;
+  }
+</style>

@@ -1,0 +1,39 @@
+---
+export interface Props {
+  pubId?: string;
+  gaId?: string;
+}
+const {
+  pubId = 'ca-pub-2168172914069272',
+  gaId = 'G-H0QJ65JZ88',
+} = Astro.props;
+---
+<!-- Google Consent Mode v2 Default Settings (Muss vor allen Google Tags geladen werden) -->
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('consent', 'default', {
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'analytics_storage': 'denied',
+    'wait_for_update': 500
+  });
+  gtag('js', new Date());
+  gtag('config', 'G-H0QJ65JZ88');
+</script>
+
+<!-- Google tag (gtag.js) GA4 -->
+<script
+  is:inline
+  async
+  src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+></script>
+
+<!-- Google AdSense & Funding Choices CMP (TCF v2.2 / Consent Mode v2) -->
+<script
+  is:inline
+  async
+  src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pubId}`}
+  crossorigin="anonymous"
+></script>

@@ -1,0 +1,97 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Datenschutzerklärung (DSGVO) | Apotheke-Notdienst24.de"
+  description="Datenschutzerklärung gemäß Datenschutz-Grundverordnung (DSGVO) und TTDSG für Apotheke-Notdienst24.de."
+  breadcrumbs={[{ name: "Datenschutz", href: "/datenschutz/" }]}
+>
+  <div class="wrap my-4 legal-container">
+    <h1>Datenschutzerklärung</h1>
+    <p class="legal-sub">Informationen über die Verarbeitung Ihrer personenbezogenen Daten gemäß DSGVO und TTDSG</p>
+
+    <div class="legal-box my-3">
+      <h2>1. Datenschutz auf einen Blick</h2>
+      <p>
+        Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können. Nachfolgend geben wir Ihnen einen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie unsere Webseite besuchen.
+      </p>
+
+      <h2>2. Verantwortliche Stelle</h2>
+      <p>
+        Verantwortlich für die Datenverarbeitung auf dieser Webseite:<br />
+        <strong>Apotheke-Notdienst24</strong><br />
+        E-Mail: <a href="mailto:info@apotheke-notdienst24.de">info@apotheke-notdienst24.de</a>
+      </p>
+
+      <h2>3. Standortbestimmung (Geolocation API)</h2>
+      <p>
+        Auf unserer Seite "In meiner Nähe" bieten wir Ihnen die Möglichkeit, über die Standortfunktion Ihres Browsers (HTML5 Geolocation API) nach nahegelegenen Notdienst-Apotheken zu suchen.
+        Diese Standortermittlung erfolgt <strong>ausschließlich nach Ihrer ausdrücklichen Einwilligung</strong> (Art. 6 Abs. 1 lit. a DSGVO) durch Bestätigung des Browser-Dialogs. Ihre Koordinaten werden nur lokal in Ihrem Browser zur Entfernungsberechnung verwendet und nicht auf unseren Servern dauerhaft gespeichert.
+      </p>
+
+      <h2>4. Google Consent Mode v2 & Cookie-Einwilligung (CMP)</h2>
+      <p>
+        Unsere Webseite nutzt den Google Consent Mode v2 in Verbindung mit einer TCF v2.2-zertifizierten Consent Management Platform (Google Funding Choices). Beim ersten Aufruf der Seite werden Marketing- und Analyse-Cookies standardmäßig blockiert (default denied). Erst wenn Sie über das Cookie-Banner aktiv einwilligen, werden entsprechende Dienste aktiviert (Art. 6 Abs. 1 lit. a DSGVO).
+      </p>
+
+      <h2>5. Google Analytics 4 (GA4)</h2>
+      <p>
+        Diese Webseite nutzt Google Analytics 4, einen Webanalysedienst der Google Ireland Limited ("Google"), Gordon House, Barrow Street, Dublin 4, Irland. Google Analytics verwendet Cookies nur nach Ihrer ausdrücklichen Einwilligung. Die IP-Anonymisierung ist in GA4 standardmäßig aktiv.
+      </p>
+
+      <h2>6. Google AdSense</h2>
+      <p>
+        Diese Webseite verwendet Google AdSense, einen Dienst zum Einbinden von Werbeanzeigen. Wenn Sie über unsere CMP eingewilligt haben, können personalisierte Anzeigen geschaltet werden. Andernfalls werden nicht-personalisierte Anzeigen ausgeliefert, die keine Nutzerprofile anlegen.
+      </p>
+
+      <h2>7. Ihre Rechte gemäß DSGVO</h2>
+      <p>
+        Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung (Art. 15 DSGVO) sowie ein Recht auf Berichtigung (Art. 16 DSGVO), Löschung (Art. 17 DSGVO) oder Einschränkung der Verarbeitung (Art. 18 DSGVO). Zudem haben Sie das Recht auf Datenübertragbarkeit (Art. 20 DSGVO) sowie das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde (Art. 77 DSGVO).
+      </p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .legal-container {
+    max-width: 800px;
+  }
+  .legal-container h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    margin: 0 0 0.4rem;
+    color: var(--ink);
+  }
+  .legal-sub {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin: 0 0 1.5rem;
+  }
+  .legal-box {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 2rem;
+    box-shadow: var(--shadow-sm);
+    line-height: 1.6;
+    color: var(--ink-secondary);
+  }
+  .legal-box h2 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 1.5rem 0 0.5rem;
+  }
+  .legal-box h2:first-child {
+    margin-top: 0;
+  }
+  .legal-box p {
+    margin: 0 0 1rem;
+    font-size: 0.95rem;
+  }
+  .legal-box a {
+    color: #dc2626;
+    text-decoration: underline;
+  }
+</style>

@@ -1,0 +1,197 @@
+---
+import Base from '../../../layouts/Base.astro';
+import LiveDateBadge from '../../../components/LiveDateBadge.astro';
+import PharmacyCard from '../../../components/PharmacyCard.astro';
+import PharmacyMap from '../../../components/PharmacyMap.astro';
+import AdSlot from '../../../components/AdSlot.astro';
+import bundeslaenderData from '../../../data/bundeslaender.json';
+
+export async function getStaticPaths() {
+  const allShards = import.meta.glob('../../../data/shards/*.json', { eager: true });
+  
+  return bundeslaenderData.map(b => {
+    const shardKey = `../../../data/shards/${b.slug}.json`;
+    const mod: any = allShards[shardKey];
+    const pharms = mod ? (mod.default || mod) : [];
+    return {
+      params: { bundesland: b.slug },
+      props: {
+        bundesland: b,
+        pharmacies: pharms
+      }
+    };
+  });
+}
+
+const { bundesland, pharmacies } = Astro.props;
+
+// Group pharmacies by city
+const citiesMap: Record<string, any[]> = {};
+for (const p of pharmacies) {
+  if (!citiesMap[p.ort]) {
+    citiesMap[p.ort] = [];
+  }
+  citiesMap[p.ort].push(p);
+}
+
+const citiesList = Object.keys(citiesMap).sort();
+
+function slugify(text: string): string {
+  return text.toLowerCase()
+    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+    .replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
+}
+
+const now = new Date();
+const activePharmacies = pharmacies.filter(p => {
+  if (p.isOpen24h) return true;
+  return (p.shifts || []).some((s: any) => {
+    const d = new Date(s.debut);
+    const f = new Date(s.fin);
+    return now >= d && now <= f;
+  });
+});
+---
+
+<Base
+  title={`Apotheken-Notdienst ${bundesland.name}: Notdienst-Apotheken heute | Apotheke-Notdienst24.de`}
+  description={`Aktuelle Notdienst-Apotheken in ${bundesland.name}. Finden Sie offizielle 24h-Dienste, Nachtschalter und Telefonnummern für heute und heute Nacht.`}
+  breadcrumbs={[
+    { name: "Bundesländer", href: "/apotheken-notdienst/" },
+    { name: bundesland.name, href: `/apotheken-notdienst/${bundesland.slug}/` }
+  ]}
+>
+  <div class="wrap my-4">
+    <LiveDateBadge prefix={`Notdienst in ${bundesland.name}:`} />
+
+    <div class="land-header">
+      <div class="land-badge">{bundesland.code}</div>
+      <div>
+        <h1 class="land-title">Apotheken-Notdienst {bundesland.name}</h1>
+        <p class="land-sub">
+          Offizieller 24-Stunden Notdienstplan für {bundesland.name} (Landeshauptstadt: {bundesland.capital}). Gesetzliche Notdienstbereitschaft gemäß ApBetrO § 23.
+        </p>
+      </div>
+    </div>
+
+    <!-- Ad Slot -->
+    <div class="my-3">
+      <AdSlot slot="5678901234" />
+    </div>
+
+    <!-- Map Section -->
+    <div class="my-4">
+      <h2 class="section-title">Karte der Notdienst-Apotheken in {bundesland.name}</h2>
+      <PharmacyMap pharmacies={pharmacies} center={[bundesland.lat, bundesland.lon]} zoom={8} cityName={bundesland.name} />
+    </div>
+
+    <!-- Cities Grid -->
+    <div class="my-4">
+      <h2 class="section-title">Städte & Gemeinden in {bundesland.name}</h2>
+      <div class="cities-grid my-2">
+        {citiesList.map(city => (
+          <a href={`/apotheken-notdienst/${bundesland.slug}/${slugify(city)}/`} class="city-btn">
+            <strong>{city}</strong>
+            <span>({citiesMap[city].length} Apotheken) →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- In-Content Ad -->
+    <div class="my-4">
+      <AdSlot slot="6789012345" />
+    </div>
+
+    <!-- Active Duty Pharmacies in this state -->
+    <div class="my-4">
+      <h2 class="section-title">Heute dienstbereite Apotheken ({activePharmacies.length})</h2>
+      <div class="cards-grid my-3">
+        {activePharmacies.map(p => (
+          <PharmacyCard pharmacy={p} />
+        ))}
+      </div>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .land-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+  .land-badge {
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 1.5rem;
+    font-weight: 900;
+    padding: 12px 18px;
+    border-radius: var(--radius-md);
+  }
+  :global([data-theme="dark"]) .land-badge {
+    background: rgba(220, 38, 38, 0.2);
+    color: #f87171;
+  }
+  .land-title {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 900;
+    margin: 0 0 0.5rem;
+    color: var(--ink);
+  }
+  .land-sub {
+    font-size: 1rem;
+    color: var(--ink-secondary);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .section-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0 0 1rem;
+  }
+  .cities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+  }
+  .city-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--ink);
+    font-size: 0.95rem;
+    transition: all 0.15s ease;
+  }
+  .city-btn:hover {
+    border-color: #dc2626;
+    background: var(--surface-hover);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+  .city-btn span {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+  @media (max-width: 600px) {
+    .land-header {
+      flex-direction: column;
+    }
+  }
+</style>

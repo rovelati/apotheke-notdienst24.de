@@ -1,0 +1,140 @@
+---
+import Base from '../../layouts/Base.astro';
+import LiveDateBadge from '../../components/LiveDateBadge.astro';
+import HeroSearch from '../../components/HeroSearch.astro';
+import AdSlot from '../../components/AdSlot.astro';
+import bundeslaenderData from '../../data/bundeslaender.json';
+
+const allShards = import.meta.glob('../../data/shards/*.json', { eager: true });
+const countsByState: Record<string, number> = {};
+
+for (const path in allShards) {
+  const match = path.match(/([a-z-]+)\.json$/);
+  if (match) {
+    const stateSlug = match[1];
+    const mod: any = allShards[path];
+    const list = mod.default || mod;
+    countsByState[stateSlug] = Array.isArray(list) ? list.length : 0;
+  }
+}
+---
+
+<Base
+  title="Apotheken-Notdienst nach Bundesland: Alle 16 Länder | Apotheke-Notdienst24.de"
+  description="Übersicht der Apotheken-Notdienste in allen 16 deutschen Bundesländern. Finden Sie offizielle Notdienstpläne für Bayern, NRW, Baden-Württemberg, Berlin und alle Regionen."
+  breadcrumbs={[{ name: "Bundesländer", href: "/apotheken-notdienst/" }]}
+>
+  <div class="wrap my-4">
+    <LiveDateBadge prefix="Bundesländer-Verzeichnis:" />
+
+    <div class="page-header">
+      <h1 class="page-title">Apotheken-Notdienst nach Bundesland</h1>
+      <p class="page-subtitle">
+        In Deutschland wird der Notdienst von den jeweils zuständigen 17 Landesapothekerkammern für jeden Notdienstbezirk geregelt. Wählen Sie Ihr Bundesland aus, um die aktuellen Notdienstzeiten und dienstbereiten Apotheken in Ihrem Landkreis zu sehen.
+      </p>
+    </div>
+
+    <div class="my-3">
+      <HeroSearch />
+    </div>
+
+    <!-- Ad Slot -->
+    <div class="my-3">
+      <AdSlot slot="4567890123" />
+    </div>
+
+    <div class="states-grid my-4">
+      {bundeslaenderData.map(b => (
+        <a href={`/apotheken-notdienst/${b.slug}/`} class="state-card-full">
+          <div class="state-badge-large">{b.code}</div>
+          <div class="state-content">
+            <h2 class="state-title">{b.name}</h2>
+            <p class="state-meta">Landeshauptstadt: <strong>{b.capital}</strong></p>
+            <span class="state-count">
+              {countsByState[b.slug] || 0} Notdienst-Apotheken verzeichnet →
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .page-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 1rem auto 2rem;
+  }
+  .page-title {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 900;
+    margin: 0 0 0.8rem;
+    color: var(--ink);
+  }
+  .page-subtitle {
+    font-size: 1.05rem;
+    color: var(--ink-secondary);
+    line-height: 1.6;
+    margin: 0;
+  }
+  .states-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+  .state-card-full {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 1.5rem;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+  }
+  .state-card-full:hover {
+    border-color: #dc2626;
+    background: var(--surface-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+  }
+  .state-badge-large {
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 1.1rem;
+    font-weight: 800;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    flex-shrink: 0;
+  }
+  :global([data-theme="dark"]) .state-badge-large {
+    background: rgba(220, 38, 38, 0.2);
+    color: #f87171;
+  }
+  .state-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .state-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    margin: 0;
+    color: var(--ink);
+  }
+  .state-meta {
+    font-size: 0.88rem;
+    color: var(--muted);
+    margin: 0;
+  }
+  .state-count {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #dc2626;
+    margin-top: 6px;
+  }
+</style>

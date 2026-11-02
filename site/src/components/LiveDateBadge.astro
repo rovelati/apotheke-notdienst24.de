@@ -1,0 +1,93 @@
+---
+export interface Props {
+  prefix?: string;
+  className?: string;
+}
+
+const { prefix = "Live-Status:", className = "" } = Astro.props;
+
+// Build-time default formatted in German
+const now = new Date();
+const dateStr = now.toLocaleDateString('de-DE', {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric'
+});
+const timeStr = now.toLocaleTimeString('de-DE', {
+  hour: '2-digit',
+  minute: '2-digit'
+});
+---
+
+<div class={`live-date-badge ${className}`} title="Echtzeit-geprüfter Apotheken-Notdienst">
+  <span class="pulse-dot"></span>
+  <span class="badge-label">{prefix}</span>
+  <time id="live-time-ticker" datetime={now.toISOString()} class="badge-time">
+    {dateStr.charAt(0).toUpperCase() + dateStr.slice(1)} um {timeStr} Uhr
+  </time>
+  <span class="badge-sub">— Notdienst aktiv bis morgen 08:30 Uhr</span>
+</div>
+
+<style>
+  .live-date-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--cross-bg);
+    border: 1px solid var(--cross-border);
+    color: var(--cross);
+    padding: 6px 14px;
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+    flex-wrap: wrap;
+  }
+  .badge-label {
+    color: var(--ink-secondary);
+  }
+  .badge-time {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .badge-sub {
+    color: var(--cross);
+    font-weight: 700;
+  }
+  @media (max-width: 600px) {
+    .live-date-badge {
+      font-size: 0.8rem;
+      padding: 5px 10px;
+    }
+    .badge-sub {
+      display: none;
+    }
+  }
+</style>
+
+<script is:inline>
+  // Keep live time clock synchronized in user's browser
+  (function() {
+    function updateClock() {
+      const el = document.getElementById('live-time-ticker');
+      if (!el) return;
+      const d = new Date();
+      const dateText = d.toLocaleDateString('de-DE', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+      const timeText = d.toLocaleTimeString('de-DE', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      el.textContent = (dateText.charAt(0).toUpperCase() + dateText.slice(1)) + ' um ' + timeText + ' Uhr';
+      el.setAttribute('datetime', d.toISOString());
+    }
+    document.addEventListener('DOMContentLoaded', updateClock);
+    setInterval(updateClock, 30000);
+  })();
+</script>

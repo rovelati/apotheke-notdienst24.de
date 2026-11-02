@@ -1,0 +1,215 @@
+---
+import Base from '../layouts/Base.astro';
+import LiveDateBadge from '../components/LiveDateBadge.astro';
+import PharmacyCard from '../components/PharmacyCard.astro';
+import PharmacyMap from '../components/PharmacyMap.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+// Load pharmacies from all shards
+const allShards = import.meta.glob('../data/shards/*.json', { eager: true });
+const allPharmacies: any[] = [];
+for (const path in allShards) {
+  const mod: any = allShards[path];
+  const list = mod.default || mod;
+  if (Array.isArray(list)) {
+    allPharmacies.push(...list);
+  }
+}
+---
+
+<Base
+  title="Apotheke Notdienst in meiner Nähe: Jetzt geöffnet | Apotheke-Notdienst24.de"
+  description="Finden Sie sofort die nächstgelegene dienstbereite Notdienst-Apotheke an Ihrem aktuellen Standort. Mit GPS-Entfernungsmesser, Notdienstzeiten und Telefon."
+  breadcrumbs={[{ name: "In meiner Nähe", href: "/in-meiner-naehe/" }]}
+>
+  <div class="wrap my-4">
+    <LiveDateBadge prefix="Standortermittlung:" />
+    
+    <div class="geo-header">
+      <h1 class="geo-title">Notdienst-Apotheke in meiner Nähe</h1>
+      <p class="geo-desc">
+        Klicken Sie auf den Button, um Ihren aktuellen Standort über GPS freizugeben. Unser System berechnet sofort die am nächsten gelegene Notdienst-Apotheke inklusive Fahrstrecke und Nachtschalter.
+      </p>
+
+      <div class="geo-actions">
+        <button type="button" id="start-geolocation-btn" class="btn btn-primary btn-large">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 2v3m0 14v3M2 12h3m14 0h3"/>
+          </svg>
+          <span>Meinen Standort freigeben & Notdienst finden</span>
+        </button>
+      </div>
+
+      <div id="geo-status-box" class="status-alert" style="display:none;"></div>
+    </div>
+
+    <!-- Ad Slot -->
+    <div class="my-3">
+      <AdSlot slot="3456789012" />
+    </div>
+
+    <!-- Results Section -->
+    <div id="geo-results-wrap" style="display:none;" class="my-4">
+      <h2 id="geo-results-title" class="section-title">Nächstgelegene Notdienst-Apotheken</h2>
+      <div id="geo-cards-list" class="cards-grid my-3"></div>
+    </div>
+
+    <!-- Map Section -->
+    <div class="my-4">
+      <h2 class="section-title">Apotheken-Karte</h2>
+      <PharmacyMap pharmacies={allPharmacies} zoom={6} />
+    </div>
+  </div>
+</Base>
+
+<style>
+  .geo-header {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .geo-title {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800;
+    margin: 0 0 0.8rem;
+    color: var(--ink);
+  }
+  .geo-desc {
+    font-size: 1.05rem;
+    color: var(--ink-secondary);
+    max-width: 620px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.5;
+  }
+  .btn-large {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: #dc2626;
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 14px 28px;
+    border-radius: var(--radius-full);
+    border: none;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    transition: all 0.15s ease;
+  }
+  .btn-large:hover {
+    background: #b91c1c;
+    transform: scale(1.02);
+  }
+  .status-alert {
+    max-width: 500px;
+    margin: 1.2rem auto 0;
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+  .section-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0 0 1rem;
+  }
+</style>
+
+<script is:inline define:vars={{ allPharmacies }}>
+  (function() {
+    function haversine(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Earth radius km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    const btn = document.getElementById('start-geolocation-btn');
+    const statusBox = document.getElementById('geo-status-box');
+    const resultsWrap = document.getElementById('geo-results-wrap');
+    const cardsList = document.getElementById('geo-cards-list');
+
+    if (!btn) return;
+
+    btn.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        statusBox.style.display = 'block';
+        statusBox.style.background = '#fef2f2';
+        statusBox.style.color = '#dc2626';
+        statusBox.textContent = 'Standortbestimmung wird von Ihrem Browser leider nicht unterstützt.';
+        return;
+      }
+
+      statusBox.style.display = 'block';
+      statusBox.style.background = '#e0f2fe';
+      statusBox.style.color = '#0369a1';
+      statusBox.textContent = 'Standort wird ermittelt... Bitte Zugriff im Browser bestätigen.';
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const userLat = pos.coords.latitude;
+          const userLon = pos.coords.longitude;
+
+          statusBox.style.background = '#ecfdf5';
+          statusBox.style.color = '#059669';
+          statusBox.textContent = `Standort erfolgreich ermittelt (${userLat.toFixed(4)}, ${userLon.toFixed(4)}). Notdienste werden berechnet...`;
+
+          // Calculate distance to all pharmacies
+          const withDist = allPharmacies
+            .filter(p => p.lat && p.lon)
+            .map(p => {
+              const dist = haversine(userLat, userLon, p.lat, p.lon);
+              return { ...p, distanceKm: dist };
+            })
+            .sort((a, b) => a.distanceKm - b.distanceKm);
+
+          const nearest = withDist.slice(0, 15);
+
+          cardsList.innerHTML = nearest.map(p => `
+            <div class="card pharmacy-card ${p.isOpen24h ? 'is-notdienst' : ''}" style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;justify-content:space-between;gap:12px;">
+              <div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:8px;align-items:center;">
+                  <span style="background:${p.isOpen24h ? '#dc2626' : '#0284c7'};color:white;padding:3px 8px;border-radius:99px;font-size:11px;font-weight:bold;">
+                    ${p.isOpen24h ? '24h Dauernd Geöffnet' : 'Notdienstbereit'}
+                  </span>
+                  <span style="font-size:12px;font-weight:bold;color:var(--ink-secondary);background:var(--surface-2);padding:3px 8px;border-radius:99px;">
+                    📍 ${p.distanceKm.toFixed(1)} km entfernt
+                  </span>
+                </div>
+                <h3 style="margin:0 0 6px;font-size:1.15rem;font-weight:bold;"><a href="/apotheke/${p.slug}/" style="color:var(--ink);text-decoration:none;">${p.name}</a></h3>
+                <p style="margin:0;font-size:0.9rem;color:var(--ink-secondary);">${p.strasse}, ${p.plz} ${p.ort}</p>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:8px;">
+                ${p.telephone ? `<a href="tel:${p.telephone.replace(/\s+/g,'')}" style="flex:1;text-align:center;padding:10px;background:#dc2626;color:white;border-radius:8px;font-size:0.9rem;font-weight:bold;text-decoration:none;">📞 ${p.telephone}</a>` : `<a href="tel:116117" style="flex:1;text-align:center;padding:10px;background:#0284c7;color:white;border-radius:8px;font-size:0.9rem;font-weight:bold;text-decoration:none;">116 117 anrufen</a>`}
+                <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}" target="_blank" style="padding:10px 14px;background:var(--surface-2);color:var(--ink);border:1px solid var(--line);border-radius:8px;font-size:0.9rem;font-weight:bold;text-decoration:none;">Route</a>
+              </div>
+            </div>
+          `).join('');
+
+          resultsWrap.style.display = 'block';
+          resultsWrap.scrollIntoView({ behavior: 'smooth' });
+        },
+        (err) => {
+          statusBox.style.background = '#fef2f2';
+          statusBox.style.color = '#dc2626';
+          statusBox.textContent = 'Standortermittlung fehlgeschlagen oder vom Benutzer abgelehnt. Bitte nutzen Sie die Postleitzahlensuche auf der Startseite.';
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    });
+  })();
+</script>

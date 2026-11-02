@@ -1,0 +1,398 @@
+---
+import Base from '../layouts/Base.astro';
+import HeroSearch from '../components/HeroSearch.astro';
+import LiveDateBadge from '../components/LiveDateBadge.astro';
+import PharmacyCard from '../components/PharmacyCard.astro';
+import PharmacyMap from '../components/PharmacyMap.astro';
+import AdSlot from '../components/AdSlot.astro';
+import bundeslaenderData from '../data/bundeslaender.json';
+
+// Load major metropolitan pharmacies for Germany homepage overview
+const allShards = import.meta.glob('../data/shards/*.json', { eager: true });
+const allPharmacies: any[] = [];
+for (const path in allShards) {
+  const mod: any = allShards[path];
+  const list = mod.default || mod;
+  if (Array.isArray(list)) {
+    allPharmacies.push(...list);
+  }
+}
+
+// Top duty pharmacies today
+const now = new Date();
+const activeDutyPharmacies = allPharmacies.filter(p => {
+  if (p.isOpen24h) return true;
+  return (p.shifts || []).some((s: any) => {
+    const d = new Date(s.debut);
+    const f = new Date(s.fin);
+    return now >= d && now <= f;
+  });
+}).slice(0, 12);
+
+// Major cities for quick links
+const topCities = [
+  { name: 'Berlin', state: 'berlin', stateName: 'Berlin' },
+  { name: 'München', state: 'bayern', stateName: 'Bayern' },
+  { name: 'Hamburg', state: 'hamburg', stateName: 'Hamburg' },
+  { name: 'Köln', state: 'nordrhein-westfalen', stateName: 'NRW' },
+  { name: 'Frankfurt am Main', state: 'hessen', stateName: 'Hessen' },
+  { name: 'Stuttgart', state: 'baden-wuerttemberg', stateName: 'Baden-Württ.' },
+  { name: 'Düsseldorf', state: 'nordrhein-westfalen', stateName: 'NRW' },
+  { name: 'Leipzig', state: 'sachsen', stateName: 'Sachsen' },
+  { name: 'Dortmund', state: 'nordrhein-westfalen', stateName: 'NRW' },
+  { name: 'Essen', state: 'nordrhein-westfalen', stateName: 'NRW' },
+  { name: 'Bremen', state: 'bremen', stateName: 'Bremen' },
+  { name: 'Dresden', state: 'sachsen', stateName: 'Sachsen' },
+  { name: 'Hannover', state: 'niedersachsen', stateName: 'Niedersachsen' },
+  { name: 'Nürnberg', state: 'bayern', stateName: 'Bayern' },
+  { name: 'Duisburg', state: 'nordrhein-westfalen', stateName: 'NRW' },
+  { name: 'Bonn', state: 'nordrhein-westfalen', stateName: 'NRW' }
+];
+
+function slugify(text: string): string {
+  return text.toLowerCase()
+    .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss')
+    .replace(/[^\w\s-]/g, '').trim().replace(/[-\s]+/g, '-');
+}
+
+const faqs = [
+  {
+    q: "Wie finde ich die nächste Notdienst-Apotheke in meiner Nähe?",
+    a: "Nutzen Sie einfach unsere Suchfunktion oben auf der Seite: Geben Sie Ihre Postleitzahl oder Stadt ein, oder klicken Sie auf den Button 'In meiner Nähe', um Ihren aktuellen Standort automatisch zu bestimmen. Sie erhalten sofort die dienstbereite Notapotheke mit Adresse, Telefonnummer und Routenplaner."
+  },
+  {
+    q: "Wann beginnt und endet der Apotheken-Notdienst?",
+    a: "Gemäß § 23 der Apothekenbetriebsordnung (ApBetrO) dauert der Notdienst in der Regel 24 Stunden durchgehend: Er beginnt morgens um 08:30 Uhr (bzw. 09:00 Uhr) und endet am darauffolgenden Morgen zur gleichen Zeit. In der Nacht erfolgt die Abgabe von Medikamenten aus Sicherheitsgründen meist über die Notdienstklingel und den Nachtschalter."
+  },
+  {
+    q: "Wie hoch ist die gesetzliche Notdienstgebühr in der Apotheke?",
+    a: "Außerhalb der regulären gesetzlichen Ladenöffnungszeiten (werktags zwischen 20:00 und 06:00 Uhr sowie an Sonn- und gesetzlichen Feiertagen) wird eine gesetzliche Notdienstgebühr in Höhe von 2,50 € erhoben (§ 6 Arzneimittelpreisverordnung - AMPreisV). Ist das ärztliche Rezept mit dem Dringlichkeitsvermerk 'noctu' (nächtlich) versehen, übernimmt die Krankenkasse die Gebühr."
+  },
+  {
+    q: "Welche Telefonnummern helfen im Notfall weiter?",
+    a: "Den bundesweiten ärztlichen Bereitschaftsdienst erreichen Sie kostenfrei unter der Rufnummer 116 117. Bei lebensbedrohlichen Notfällen wählen Sie immer den Notruf 112. Über das Mobilfunknetz können Sie den Notdienst-Suchdienst der Bundesapothekerkammer unter 22 8 33 (69 ct/Min) anrufen."
+  }
+];
+
+const faqLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map(f => ({
+    "@type": "Question",
+    "name": f.q,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": f.a
+    }
+  }))
+};
+---
+
+<Base
+  title="Apotheken-Notdienst heute: Geöffnete Notdienst-Apotheken in der Nähe | Apotheke-Notdienst24.de"
+  description="Finden Sie jetzt die nächste geöffnete Notdienst-Apotheke in Deutschland. Bundesweiter 24h Notdienstplan für heute, heute Nacht, sonntags und an Feiertagen. Mit Karte, Öffnungszeiten und Telefon."
+  jsonLd={faqLd}
+>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="wrap text-center">
+      <LiveDateBadge prefix="Aktueller Dienstplan:" />
+      <h1 class="hero-title">
+        Apotheken-Notdienst <span class="text-red">in Ihrer Nähe finden</span>
+      </h1>
+      <p class="hero-subtitle">
+        Welche Apotheke hat heute und heute Nacht Notdienst? Bundesweites Verzeichnis aller 16 Bundesländer mit aktuellen Notdienstzeiten, Adressen und Notruf-Telefon.
+      </p>
+
+      <HeroSearch />
+
+      <!-- Quick Trust Badges -->
+      <div class="trust-row">
+        <span class="trust-pill">✓ Gesetzlicher 24h-Dienst (ApBetrO)</span>
+        <span class="trust-pill">✓ 365 Tage im Jahr aktuell</span>
+        <span class="trust-pill">✓ Inklusive Nachtschalter & Notruf</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Top Ad Slot -->
+  <div class="wrap my-2">
+    <AdSlot slot="7182938401" />
+  </div>
+
+  <!-- Map Section -->
+  <section class="wrap my-4">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Deutschlandkarte: Notdienst-Apotheken im Überblick</h2>
+        <p class="section-sub">Interaktive Karte der dienstbereiten Notdienst- und 24h-Apotheken in den Metropolregionen.</p>
+      </div>
+    </div>
+    <PharmacyMap pharmacies={allPharmacies} zoom={6} />
+  </section>
+
+  <!-- Quick Cities Grid -->
+  <section class="wrap my-4">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Notdienst in den größten Städten</h2>
+        <p class="section-sub">Direkter Zugriff auf die Notfall-Apotheken der deutschen Großstädte.</p>
+      </div>
+    </div>
+    <div class="city-grid">
+      {topCities.map(city => (
+        <a href={`/apotheken-notdienst/${city.state}/${slugify(city.name)}/`} class="city-card">
+          <span class="city-name">{city.name}</span>
+          <span class="city-state">{city.stateName} →</span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- Live Active Duty Pharmacies -->
+  <section class="wrap my-4">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Aktuell dienstbereite Notapotheken</h2>
+        <p class="section-sub">Apotheken mit aktivem 24h-Notdienst oder ständiger Notdienstbereitschaft.</p>
+      </div>
+    </div>
+
+    <div class="cards-grid">
+      {activeDutyPharmacies.map(p => (
+        <PharmacyCard pharmacy={p} />
+      ))}
+    </div>
+  </section>
+
+  <!-- In-Content Ad -->
+  <div class="wrap my-4">
+    <AdSlot slot="8293041526" />
+  </div>
+
+  <!-- 16 Bundeslaender Directory -->
+  <section class="wrap my-4">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Notdienst nach Bundesland</h2>
+        <p class="section-sub">Wählen Sie Ihr Bundesland aus, um die Notdienst-Apotheken in Ihrem Landkreis zu sehen.</p>
+      </div>
+    </div>
+
+    <div class="states-grid">
+      {bundeslaenderData.map(b => (
+        <a href={`/apotheken-notdienst/${b.slug}/`} class="state-card">
+          <div class="state-badge">{b.code}</div>
+          <div class="state-info">
+            <span class="state-name">{b.name}</span>
+            <span class="state-capital">Landeshauptstadt: {b.capital}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <!-- FAQ Accordion -->
+  <section class="wrap my-4 faq-section">
+    <div class="section-head">
+      <div>
+        <h2 class="section-title">Häufig gestellte Fragen zum Notdienst</h2>
+        <p class="section-sub">Wissenswertes zu Gebühren, Nachtschaltern und Rezepten im Apotheken-Notdienst.</p>
+      </div>
+    </div>
+
+    <div class="faq-list">
+      {faqs.map(f => (
+        <details class="faq-item">
+          <summary class="faq-question">
+            <span>{f.q}</span>
+            <span class="faq-arrow">▼</span>
+          </summary>
+          <div class="faq-answer">
+            <p>{f.a}</p>
+          </div>
+        </details>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero-section {
+    background: radial-gradient(circle at center 20%, rgba(220, 38, 38, 0.08) 0%, transparent 70%);
+    padding: 3.5rem 1rem 2rem;
+  }
+  .hero-title {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    max-width: 840px;
+    margin: 0 auto 1rem;
+    color: var(--ink);
+  }
+  .text-red {
+    color: #dc2626;
+  }
+  .hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--ink-secondary);
+    max-width: 660px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.5;
+  }
+  .trust-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+  }
+  .trust-pill {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--surface-2);
+    padding: 4px 12px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--line);
+  }
+  .section-head {
+    margin-bottom: 1.5rem;
+  }
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0 0 0.3rem;
+  }
+  .section-sub {
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin: 0;
+  }
+  .city-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  .city-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 12px 16px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  .city-card:hover {
+    border-color: #dc2626;
+    background: var(--surface-hover);
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+  .city-name {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 0.95rem;
+  }
+  .city-state {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+  .states-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 12px;
+  }
+  .state-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.15s ease;
+  }
+  .state-card:hover {
+    border-color: #dc2626;
+    background: var(--surface-hover);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+  .state-badge {
+    background: #fee2e2;
+    color: #dc2626;
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+  }
+  :global([data-theme="dark"]) .state-badge {
+    background: rgba(220, 38, 38, 0.2);
+    color: #f87171;
+  }
+  .state-info {
+    display: flex;
+    flex-direction: column;
+  }
+  .state-name {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 0.95rem;
+  }
+  .state-capital {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 860px;
+  }
+  .faq-item {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+  .faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--ink);
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq-question::-webkit-details-marker {
+    display: none;
+  }
+  .faq-arrow {
+    font-size: 0.75rem;
+    color: var(--muted);
+    transition: transform 0.2s ease;
+  }
+  .faq-item[open] .faq-arrow {
+    transform: rotate(180deg);
+  }
+  .faq-answer {
+    padding: 0 18px 16px;
+    color: var(--ink-secondary);
+    font-size: 0.92rem;
+    line-height: 1.6;
+    border-top: 1px solid var(--line-light);
+  }
+</style>
