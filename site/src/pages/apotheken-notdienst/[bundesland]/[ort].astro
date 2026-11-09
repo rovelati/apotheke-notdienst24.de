@@ -4,6 +4,7 @@ import LiveDateBadge from '../../../components/LiveDateBadge.astro';
 import PharmacyCard from '../../../components/PharmacyCard.astro';
 import PharmacyMap from '../../../components/PharmacyMap.astro';
 import AdSlot from '../../../components/AdSlot.astro';
+import AponetSearchWidget from '../../../components/AponetSearchWidget.astro';
 import bundeslaenderData from '../../../data/bundeslaender.json';
 
 export async function getStaticPaths() {
@@ -187,6 +188,9 @@ const faqLd = {
           </div>
         </div>
       </div>
+
+      <!-- Offizielles aponet.de Notdienstsuche Widget -->
+      <AponetSearchWidget plzOrOrt={cityName} variant="compact" title={`Offizielle Notdienstsuche für ${cityName}`} />
     </div>
 
     <!-- Ad Slot -->

@@ -5,6 +5,7 @@ import LiveDateBadge from '../components/LiveDateBadge.astro';
 import PharmacyCard from '../components/PharmacyCard.astro';
 import PharmacyMap from '../components/PharmacyMap.astro';
 import AdSlot from '../components/AdSlot.astro';
+import AponetSearchWidget from '../components/AponetSearchWidget.astro';
 import bundeslaenderData from '../data/bundeslaender.json';
 
 // Load major metropolitan pharmacies for Germany homepage overview
@@ -124,6 +125,11 @@ const faqLd = {
       </div>
     </div>
     <PharmacyMap pharmacies={allPharmacies} zoom={6} />
+  </section>
+
+  <!-- Offizieller aponet.de Notdienst-Suchdienst -->
+  <section class="wrap my-3">
+    <AponetSearchWidget variant="card" title="Offizielle Notdienstsuche über aponet.de" />
   </section>
 
   <!-- Quick Cities Grid -->

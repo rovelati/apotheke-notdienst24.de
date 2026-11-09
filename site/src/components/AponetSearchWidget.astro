@@ -1,0 +1,283 @@
+---
+export interface Props {
+  plzOrOrt?: string;
+  variant?: 'card' | 'native' | 'compact';
+  title?: string;
+}
+
+const {
+  plzOrOrt = '',
+  variant = 'card',
+  title = 'Apotheken- & Notdienstsuche'
+} = Astro.props;
+---
+
+{variant === 'native' ? (
+  <!-- aponet.de: Offizielles Widget (Unverändert) -->
+  <div class="aponet-native-widget" style="position:relative;font:14px Verdana,Helvetica,sans-serif;color:#333333;width:298px;height:165px;background-color:#fff;padding:0;border:1px solid #bfbfbf;border-radius: 5px;margin: 1rem auto;">
+    <div style="position:absolute;top:60px;left:8px;width:280px;">
+      <div style="display:block;position:absolute;top:-40px;left:0;font-size:11px;line-height:18px;width:auto;background-color:#e2001a;padding:6px 11px;margin:0;border-radius:100px;color:#FFF">
+        Apotheke finden
+      </div>
+      <form name="search" action="https://www.aponet.de/apotheke/apothekensuche?tx_aponetpharmacy_search%5Baction%5D=search&tx_aponetpharmacy_search%5Bcontroller%5D=Search&cHash=fc3c77fe8cbcb73573464fc782e9987f" method="post" target="_blank" style="padding:0;border:0;margin:0;">
+        <fieldset style="display: block;height:38px;background:#fff;padding:0;border:1px solid #e2001a;margin:0;border-radius: 5px;overflow: hidden;">
+          <input
+            name="tx_aponetpharmacy_search[search][plzort]"
+            id="zipcityPharmacyNative"
+            class="text"
+            value={plzOrOrt}
+            placeholder="PLZ oder Ort"
+            type="text"
+            style="position:absolute;top:11px;left:10px;font-size:14px;color:#333333;width:180px;background-color:transparent;padding:0;border:0;margin:0;"
+          />
+          <button
+            type="submit"
+            value=""
+            title="Apothekensuche starten"
+            style="display: inline-block;position:absolute;right:-2px;height:98%;padding:0 10px;background-color:#e2001a;color:#FFF;border-radius: 5px;border:1px solid #e2001a;font-size:14px;cursor:pointer;"
+          >
+            Suchen
+          </button>
+        </fieldset>
+      </form>
+    </div>
+    <p style="position:relative;top:106px;left:8px;font-size:11px;width:282px;padding:0;margin:0;">
+      <span style="display:inline-block;position:absolute;top:8px;left:0;">Ein Service von:</span>
+      <a href="https://www.aponet.de" title="Zur Startseite von aponet.de - dem offiziellen Gesundheitsportal der deutschen ApothekerInnen" style="position:absolute;top:0;right:2px;text-decoration:none;" target="_blank" rel="noopener noreferrer">
+        <img decoding="async" src="https://www.aponet.de/fileadmin/public/widgets/logo_search_widget.svg" alt="aponet.de - dem offiziellen Gesundheitsportal der deutschen Apothekerinnen und Apotheker" />
+      </a>
+    </p>
+  </div>
+) : variant === 'compact' ? (
+  <!-- aponet.de: Kompakte responsive Leiste -->
+  <div class="aponet-compact-bar">
+    <form
+      action="https://www.aponet.de/apotheke/apothekensuche?tx_aponetpharmacy_search%5Baction%5D=search&tx_aponetpharmacy_search%5Bcontroller%5D=Search&cHash=fc3c77fe8cbcb73573464fc782e9987f"
+      method="post"
+      target="_blank"
+      class="aponet-bar-form"
+    >
+      <input
+        name="tx_aponetpharmacy_search[search][plzort]"
+        type="text"
+        value={plzOrOrt}
+        placeholder="PLZ oder Ort"
+        aria-label="PLZ oder Ort für aponet.de Suche"
+        required
+      />
+      <button type="submit" class="aponet-bar-btn">
+        <span>Offizielle Notdienstsuche</span> ➔
+      </button>
+    </form>
+    <div class="aponet-attribution">
+      <span>Ein Service von:</span>
+      <a href="https://www.aponet.de" target="_blank" rel="noopener noreferrer" title="aponet.de - Offizielles Gesundheitsportal der deutschen ApothekerInnen">
+        <img src="https://www.aponet.de/fileadmin/public/widgets/logo_search_widget.svg" alt="aponet.de" height="18" loading="lazy" />
+      </a>
+    </div>
+  </div>
+) : (
+  <!-- aponet.de: Vollwertige responsive Service-Card -->
+  <div class="aponet-card-widget">
+    <div class="aponet-card-header">
+      <span class="aponet-badge">Offizieller Service</span>
+      <h3 class="aponet-card-title">{title}</h3>
+      <p class="aponet-card-desc">
+        Direkte Notdienst- und Apothekensuche über das offizielle Gesundheitsportal der deutschen ApothekerInnen (aponet.de).
+      </p>
+    </div>
+
+    <form
+      name="search"
+      action="https://www.aponet.de/apotheke/apothekensuche?tx_aponetpharmacy_search%5Baction%5D=search&tx_aponetpharmacy_search%5Bcontroller%5D=Search&cHash=fc3c77fe8cbcb73573464fc782e9987f"
+      method="post"
+      target="_blank"
+      class="aponet-form"
+    >
+      <div class="aponet-input-group">
+        <input
+          name="tx_aponetpharmacy_search[search][plzort]"
+          id="zipcityPharmacyCard"
+          class="aponet-input"
+          value={plzOrOrt}
+          placeholder="PLZ oder Stadt (z.B. 10115 oder Berlin)"
+          type="text"
+          required
+        />
+        <button type="submit" class="aponet-submit-btn">
+          <span>Suchen</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+
+    <div class="aponet-card-footer">
+      <span class="aponet-footer-text">Ein kostenloser Service von:</span>
+      <a
+        href="https://www.aponet.de"
+        title="Zur Startseite von aponet.de - Offizielles Gesundheitsportal der deutschen ApothekerInnen"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="aponet-logo-link"
+      >
+        <img
+          decoding="async"
+          src="https://www.aponet.de/fileadmin/public/widgets/logo_search_widget.svg"
+          alt="aponet.de - Offizielles Gesundheitsportal der deutschen ApothekerInnen"
+          class="aponet-logo-img"
+          loading="lazy"
+        />
+      </a>
+    </div>
+  </div>
+)}
+
+<style>
+  .aponet-card-widget {
+    background: #ffffff;
+    border: 1px solid var(--line, #e2e8f0);
+    border-radius: var(--radius-lg, 16px);
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    max-width: 520px;
+    margin: 1.5rem auto;
+    text-align: left;
+  }
+  .aponet-card-header {
+    margin-bottom: 1rem;
+  }
+  .aponet-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 0.5rem;
+  }
+  .aponet-card-title {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: var(--ink, #0f172a);
+    margin: 0 0 0.3rem;
+  }
+  .aponet-card-desc {
+    font-size: 0.88rem;
+    color: var(--muted, #64748b);
+    margin: 0;
+    line-height: 1.45;
+  }
+  .aponet-input-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 0.8rem;
+  }
+  .aponet-input {
+    flex: 1;
+    padding: 11px 16px;
+    font-size: 0.95rem;
+    border: 1.5px solid var(--line, #cbd5e1);
+    border-radius: var(--radius-md, 10px);
+    outline: none;
+    transition: all 0.2s;
+  }
+  .aponet-input:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+  }
+  .aponet-submit-btn {
+    background: #dc2626;
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius-md, 10px);
+    padding: 11px 18px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .aponet-submit-btn:hover {
+    background: #b91c1c;
+  }
+  .aponet-submit-btn:active {
+    transform: scale(0.98);
+  }
+  .aponet-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid #f1f5f9;
+  }
+  .aponet-footer-text {
+    font-size: 0.78rem;
+    color: #94a3b8;
+  }
+  .aponet-logo-link {
+    display: inline-block;
+    transition: opacity 0.2s;
+  }
+  .aponet-logo-link:hover {
+    opacity: 0.85;
+  }
+  .aponet-logo-img {
+    height: 22px;
+    display: block;
+  }
+
+  /* Compact Bar Styling */
+  .aponet-compact-bar {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: var(--radius-md, 12px);
+    padding: 0.8rem 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 1rem 0;
+  }
+  .aponet-bar-form {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 260px;
+  }
+  .aponet-bar-form input {
+    flex: 1;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+  }
+  .aponet-bar-btn {
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .aponet-attribution {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: #64748b;
+  }
+</style>

@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import AdSlot from '../components/AdSlot.astro';
+import AponetSearchWidget from '../components/AponetSearchWidget.astro';
 
 const guideLd = [
   {
@@ -298,6 +299,11 @@ const guideLd = [
               Ohne Vorwahl vom Handy aus erreichbar: <a href="tel:22833"><strong>22 8 33</strong></a> (Sprachdienst oder SMS mit PLZ an 22 8 33; gebührenpflichtig, ca. 0,69 €/Min bzw. SMS).
             </p>
           </div>
+        </div>
+
+        <!-- Offizielles aponet.de Notdienstsuche Widget -->
+        <div class="my-4">
+          <AponetSearchWidget variant="card" title="Jetzt Notdienst-Apotheke direkt auf aponet.de suchen" />
         </div>
       </section>
 
