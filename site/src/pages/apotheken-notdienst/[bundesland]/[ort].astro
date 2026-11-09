@@ -99,21 +99,14 @@ expandedPharmacies.sort((a, b) => {
   return (a.distanceKm || 0) - (b.distanceKm || 0);
 });
 
-// Calculate active duty pharmacies
-const now = new Date();
-const activeDuty = expandedPharmacies.filter(p => {
-  if (p.isOpen24h) return true;
-  return (p.shifts || []).some((s: any) => {
-    const d = new Date(s.debut);
-    const f = new Date(s.fin);
-    return now >= d && now <= f;
-  });
-});
+// 24h permanent pharmacies in this area
+const permanent24h = expandedPharmacies.filter(p => p.isOpen24h);
+const kammerPortalUrl = bundesland.verifiedPortalUrl || 'https://www.aponet.de/apotheke/notdienstsuche';
 
 const faqs = [
   {
     q: `Welche Apotheke hat in ${cityName} heute Notdienst?`,
-    a: `Aktuell sind in ${cityName} und im direkten Umkreis ${activeDuty.length} Apotheke(n) für den Notdienst eingeteilt. Die dienstbereite Notdienst-Apotheke finden Sie oben mit Adresse, Telefonnummer und 24h-Bereitschaftsstatus.`
+    a: `Der Notdienst der Apotheken in ${cityName} wird nach § 23 ApBetrO durch die ${bundesland.kammerName || 'zuständige Landesapothekerkammer'} eingeteilt. Nutzen Sie das offizielle Kammerportal oder rufen Sie vorab die Apotheke telefonisch an, um den tagesaktuellen Notdienst zu erfragen.`
   },
   {
     q: `Gibt es in ${cityName} eine Notdienstgebühr?`,
@@ -121,7 +114,7 @@ const faqs = [
   },
   {
     q: `Wie erhalte ich nachts in ${cityName} dringend benötigte Medikamente?`,
-    a: `Die Notdienst-Apotheken in ${cityName} bedienen nachts über die Notdienstklingel am Nachtschalter. Bringen Sie bitte Ihre Versichertenkarte und Ihr Rezept mit.`
+    a: `Die Notdienst-Apotheken in ${cityName} bedienen nachts über die Notdienstklingel am Nachtschalter. Bringen Sie bitte Ihre Versichertenkarte und Ihr ärztliches Rezept mit. Bei lebensbedrohlichen Notfällen wählen Sie immer den Notruf 112.`
   }
 ];
 
@@ -162,19 +155,30 @@ const faqLd = {
 
       <div class="city-stats-bar">
         <div class="stat-item">
-          <strong>{activeDuty.length}</strong>
-          <span>Jetzt im Notdienst</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
           <strong>{cityPharmacies.length}</strong>
-          <span>Apotheken im Stadtgebiet</span>
+          <span>Apotheken in {cityName}</span>
         </div>
         <div class="stat-divider"></div>
         <div class="stat-item">
-          <strong>24h</strong>
-          <span>Durchgehende Notversorgung</span>
+          <strong>116 117</strong>
+          <span>Ärztl. Bereitschaftsdienst</span>
         </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <strong>22 8 33</strong>
+          <span>Offizielle Notdiensthotline</span>
+        </div>
+      </div>
+
+      <div class="official-kammer-banner my-3">
+        <div class="banner-icon">🏛️</div>
+        <div class="banner-text">
+          <strong>Offizielle Notdienst-Einteilung:</strong> {bundesland.kammerName || 'Landesapothekerkammer'}
+          <p>Dienstzeiten wechseln täglich gem. § 23 ApBetrO. Prüfen Sie die Dienstbereitschaft im offiziellen Kammer-Portal:</p>
+        </div>
+        <a href={kammerPortalUrl} target="_blank" rel="noopener noreferrer nofollow" class="btn-official-kammer">
+          Offizielles Kammerportal ({bundesland.code}) ↗
+        </a>
       </div>
     </div>
 
@@ -183,28 +187,30 @@ const faqLd = {
       <AdSlot slot="7890123456" />
     </div>
 
-    <!-- Active Duty Pharmacies (Primary Emergency Target) -->
-    <section class="my-4">
-      <div class="section-head">
-        <div>
-          <h2 class="section-title">🔴 Aktuell dienstbereite Notapotheken ({activeDuty.length})</h2>
-          <p class="section-sub">Diese Apotheken haben jetzt geöffnet oder sind per Notdienstklingel erreichbar.</p>
+    {permanent24h.length > 0 && (
+      <!-- Permanent 24h Pharmacies -->
+      <section class="my-4">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">🟢 Ständige 24h-Apotheken in {cityName} & Umgebung ({permanent24h.length})</h2>
+            <p class="section-sub">Diese Apotheken bieten durchgehenden Notdienst an 365 Tagen im Jahr.</p>
+          </div>
         </div>
-      </div>
 
-      <div class="cards-grid">
-        {activeDuty.map(p => (
-          <PharmacyCard pharmacy={p} />
-        ))}
-      </div>
-    </section>
+        <div class="cards-grid">
+          {permanent24h.map(p => (
+            <PharmacyCard pharmacy={p} />
+          ))}
+        </div>
+      </section>
+    )}
 
     <!-- Map Section -->
     <section class="my-4">
       <div class="section-head">
         <div>
-          <h2 class="section-title">Karte der Notdienst-Apotheken in {cityName}</h2>
-          <p class="section-sub">Interaktive Übersicht aller Notdienst- und Umkreis-Apotheken.</p>
+          <h2 class="section-title">Karte der Apotheken in {cityName}</h2>
+          <p class="section-sub">Übersicht aller Notdienst- und Umkreis-Apotheken. Vor Anfahrt immer anrufen!</p>
         </div>
       </div>
       <PharmacyMap pharmacies={expandedPharmacies} center={[centerLat, centerLon]} zoom={13} cityName={cityName} />
@@ -215,12 +221,12 @@ const faqLd = {
       <AdSlot slot="8901234567" />
     </div>
 
-    <!-- All Pharmacies in this City / 25km Radius -->
+    <!-- All Pharmacies in this City / Radius -->
     <section class="my-4">
       <div class="section-head">
         <div>
-          <h2 class="section-title">Alle Apotheken in {cityName} & Umgebung ({expandedPharmacies.length})</h2>
-          <p class="section-sub">Übersicht aller regulären Apotheken inklusive Notdienst-Rotationsplan.</p>
+          <h2 class="section-title">Apotheken in {cityName} & Umgebung ({expandedPharmacies.length})</h2>
+          <p class="section-sub">Kontaktdaten, Adresse und Telefonnummer zur Notdienst-Verifikation.</p>
         </div>
       </div>
 
@@ -320,6 +326,49 @@ const faqLd = {
     width: 1px;
     height: 30px;
     background: var(--line);
+  }
+  .official-kammer-banner {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+  :global([data-theme="dark"]) .official-kammer-banner {
+    background: var(--surface-2);
+    border-color: var(--line);
+  }
+  .banner-icon {
+    font-size: 1.8rem;
+  }
+  .banner-text {
+    flex: 1;
+    min-width: 200px;
+    font-size: 0.9rem;
+    color: var(--ink-secondary);
+  }
+  .banner-text p {
+    margin: 3px 0 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .btn-official-kammer {
+    background: #0284c7;
+    color: #ffffff;
+    padding: 8px 14px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  .btn-official-kammer:hover {
+    background: #0369a1;
+    text-decoration: none;
   }
   .section-head {
     margin-bottom: 1.5rem;

@@ -13,35 +13,25 @@ export interface Props {
     isOpen24h?: boolean;
     googleRating?: number | null;
     googleReviewsTotal?: number;
-    shifts?: Array<{ type: string; debut: string; fin: string; gebuehr?: string; notes: string }>;
+    kammerPortalUrl?: string;
   }>;
   center?: [number, number];
   zoom?: number;
   cityName?: string;
-  defaultOnlyOpen?: boolean;
 }
 
 const {
   pharmacies,
   center = [51.1657, 10.4515], // Center of Germany
   zoom = 12,
-  cityName = "",
-  defaultOnlyOpen = true
+  cityName = ""
 } = Astro.props;
-
-const now = new Date();
 
 // Filter pharmacies with valid lat/lon
 const validPharmacies = pharmacies.filter(p => p.lat && p.lon && !isNaN(p.lat) && !isNaN(p.lon));
 
 const mappedData = validPharmacies.map(p => {
   const is24h = Boolean(p.isOpen24h);
-  const activeShift = (p.shifts || []).find(s => {
-    const d = new Date(s.debut);
-    const f = new Date(s.fin);
-    return now >= d && now <= f;
-  });
-  const isNotdienst = is24h || Boolean(activeShift);
 
   return {
     id: p.id || p.slug || Math.random().toString(),
@@ -53,26 +43,28 @@ const mappedData = validPharmacies.map(p => {
     lat: p.lat,
     lon: p.lon,
     tel: p.telephone,
-    isNotdienst,
     is24h,
     rating: p.googleRating,
     reviewsCount: p.googleReviewsTotal,
-    gebuehr: activeShift ? activeShift.gebuehr : '',
-    shiftNotes: activeShift ? activeShift.notes : ''
+    kammerUrl: p.kammerPortalUrl || 'https://www.aponet.de/apotheke/notdienstsuche'
   };
 });
+
+const count24h = mappedData.filter(p => p.is24h).length;
 ---
 
 <div class="map-container-box">
   <div class="map-controls-bar">
     <div class="map-filter-group">
-      <button type="button" id="toggle-filter-open" class="map-toggle-btn active" data-active="true">
+      <button type="button" id="toggle-filter-all" class="map-toggle-btn active" data-filter="all">
         <span class="toggle-indicator"></span>
-        <span class="toggle-text">🔴 Nur JETZT Notdienst ({mappedData.filter(p => p.isNotdienst).length})</span>
+        <span class="toggle-text">Alle Apotheken ({mappedData.length})</span>
       </button>
-      <button type="button" id="toggle-filter-all" class="map-toggle-btn" data-active="false">
-        <span>Alle Apotheken ({mappedData.length})</span>
-      </button>
+      {count24h > 0 && (
+        <button type="button" id="toggle-filter-24h" class="map-toggle-btn" data-filter="24h">
+          <span>🟢 Ständige 24h-Apotheken ({count24h})</span>
+        </button>
+      )}
     </div>
 
     <div class="map-actions-group">
@@ -93,17 +85,19 @@ const mappedData = validPharmacies.map(p => {
   <div id="pharmacy-map" class="interactive-map"></div>
 
   <div class="map-legend">
-    <div class="legend-item">
-      <span class="legend-dot dot-red"></span>
-      <span>🔴 Jetzt Notdienst / Dauernd geöffnet</span>
-    </div>
+    {count24h > 0 && (
+      <div class="legend-item">
+        <span class="legend-dot dot-green"></span>
+        <span>Ständige 24h-Apotheke</span>
+      </div>
+    )}
     <div class="legend-item">
       <span class="legend-dot dot-blue"></span>
-      <span>Reguläre Apotheke</span>
+      <span>Apotheke (Notdienst wechselnd)</span>
     </div>
     <div class="legend-item">
       <span class="legend-dot dot-cluster"></span>
-      <span>Cluster (Zahl = Apotheken)</span>
+      <span>Cluster (mehrere Apotheken)</span>
     </div>
   </div>
 </div>
@@ -151,9 +145,9 @@ const mappedData = validPharmacies.map(p => {
     transition: all 0.15s ease;
   }
   .map-toggle-btn.active {
-    background: #dc2626;
+    background: #1e293b;
     color: #ffffff;
-    border-color: #dc2626;
+    border-color: #1e293b;
   }
   .toggle-indicator {
     width: 8px;
@@ -208,7 +202,7 @@ const mappedData = validPharmacies.map(p => {
     height: 10px;
     border-radius: 50%;
   }
-  .dot-red { background: #dc2626; }
+  .dot-green { background: #059669; }
   .dot-blue { background: #0284c7; }
   .dot-cluster { background: #d97706; }
 
@@ -238,9 +232,9 @@ const mappedData = validPharmacies.map(p => {
       }).addTo(map);
 
       // Custom SVG icons
-      const redIcon = L.divIcon({
-        className: 'custom-pin-red',
-        html: '<div style="background:#dc2626;color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px;box-shadow:0 2px 6px rgba(0,0,0,0.3);border:2px solid white;">A</div>',
+      const greenIcon = L.divIcon({
+        className: 'custom-pin-green',
+        html: '<div style="background:#059669;color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px;box-shadow:0 2px 6px rgba(0,0,0,0.3);border:2px solid white;">24h</div>',
         iconSize: [30, 30],
         iconAnchor: [15, 15],
         popupAnchor: [0, -15]
@@ -261,30 +255,33 @@ const mappedData = validPharmacies.map(p => {
       });
       map.addLayer(clusterGroup);
 
-      let currentOnlyNotdienst = true;
+      let currentFilter = 'all';
 
       function renderMarkers() {
         clusterGroup.clearLayers();
-        const toShow = currentOnlyNotdienst ? mappedData.filter(p => p.isNotdienst) : mappedData;
+        const toShow = currentFilter === '24h' ? mappedData.filter(p => p.is24h) : mappedData;
         const bounds = [];
 
         toShow.forEach(p => {
           if (!p.lat || !p.lon) return;
           const marker = L.marker([p.lat, p.lon], {
-            icon: p.isNotdienst ? redIcon : blueIcon
+            icon: p.is24h ? greenIcon : blueIcon
           });
 
           const popupContent = `
-            <div style="font-family:system-ui,sans-serif;padding:4px;min-width:200px;">
-              <div style="display:inline-block;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:bold;color:white;background:${p.isNotdienst ? '#dc2626' : '#0284c7'};margin-bottom:6px;">
-                ${p.is24h ? '24h Dauernd Geöffnet' : p.isNotdienst ? 'JETZT NOTDIENST' : 'Reguläre Apotheke'}
+            <div style="font-family:system-ui,sans-serif;padding:4px;min-width:210px;">
+              <div style="display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:bold;color:white;background:${p.is24h ? '#059669' : '#0284c7'};margin-bottom:6px;">
+                ${p.is24h ? '24h Dauernd Geöffnet' : 'Apotheke'}
               </div>
               <h4 style="margin:0 0 4px;font-size:14px;font-weight:bold;">${p.name}</h4>
               <p style="margin:0 0 8px;font-size:12px;color:#555;">${p.strasse}, ${p.plz} ${p.ort}</p>
-              ${p.rating ? `<div style="font-size:12px;margin-bottom:8px;">★ <strong>${p.rating.toFixed(1)}</strong> (${p.reviewsCount || 0} Bewertungen)</div>` : ''}
-              <div style="display:flex;gap:6px;">
-                ${p.tel ? `<a href="tel:${p.tel.replace(/\s+/g,'')}" style="flex:1;text-align:center;padding:6px;background:#dc2626;color:white;border-radius:4px;font-size:12px;font-weight:bold;text-decoration:none;">📞 Anrufen</a>` : `<a href="tel:116117" style="flex:1;text-align:center;padding:6px;background:#0284c7;color:white;border-radius:4px;font-size:12px;font-weight:bold;text-decoration:none;">116 117</a>`}
-                <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}" target="_blank" style="padding:6px 10px;background:#eee;color:#111;border-radius:4px;font-size:12px;text-decoration:none;font-weight:bold;">Route</a>
+              ${p.rating ? `<div style="font-size:11px;margin-bottom:8px;color:#666;">★ <strong>${p.rating.toFixed(1)}</strong> (${p.reviewsCount || 0} Bewertungen)</div>` : ''}
+              <div style="display:flex;gap:6px;margin-bottom:6px;">
+                ${p.tel ? `<a href="tel:${p.tel.replace(/\s+/g,'')}" style="flex:1;text-align:center;padding:6px;background:#dc2626;color:white;border-radius:4px;font-size:11px;font-weight:bold;text-decoration:none;">📞 Vorab anrufen</a>` : `<a href="tel:116117" style="flex:1;text-align:center;padding:6px;background:#0284c7;color:white;border-radius:4px;font-size:11px;font-weight:bold;text-decoration:none;">116 117</a>`}
+                <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}" target="_blank" style="padding:6px 10px;background:#eee;color:#111;border-radius:4px;font-size:11px;text-decoration:none;font-weight:bold;">Route</a>
+              </div>
+              <div style="font-size:10px;color:#64748b;line-height:1.25;background:#f8fafc;padding:4px;border-radius:3px;">
+                ⚠️ Notdienst-Bereitschaft vor Fahrtantritt bitte immer telefonisch rückbestätigen.
               </div>
             </div>
           `;
@@ -301,20 +298,23 @@ const mappedData = validPharmacies.map(p => {
       renderMarkers();
 
       // Filter buttons
-      const btnOpen = document.getElementById('toggle-filter-open');
       const btnAll = document.getElementById('toggle-filter-all');
+      const btn24h = document.getElementById('toggle-filter-24h');
 
-      if (btnOpen && btnAll) {
-        btnOpen.addEventListener('click', () => {
-          currentOnlyNotdienst = true;
-          btnOpen.classList.add('active');
-          btnAll.classList.remove('active');
+      if (btnAll) {
+        btnAll.addEventListener('click', () => {
+          currentFilter = 'all';
+          btnAll.classList.add('active');
+          if (btn24h) btn24h.classList.remove('active');
           renderMarkers();
         });
-        btnAll.addEventListener('click', () => {
-          currentOnlyNotdienst = false;
-          btnAll.classList.add('active');
-          btnOpen.classList.remove('active');
+      }
+
+      if (btn24h) {
+        btn24h.addEventListener('click', () => {
+          currentFilter = '24h';
+          btn24h.classList.add('active');
+          if (btnAll) btnAll.classList.remove('active');
           renderMarkers();
         });
       }
@@ -324,35 +324,49 @@ const mappedData = validPharmacies.map(p => {
       if (btnLocate) {
         btnLocate.addEventListener('click', () => {
           if (!navigator.geolocation) {
-            alert('Standortbestimmung wird von Ihrem Browser nicht unterstützt.');
+            alert("Standortbestimmung wird von Ihrem Browser nicht unterstützt.");
             return;
           }
-          navigator.geolocation.getCurrentPosition(pos => {
-            const userLat = pos.coords.latitude;
-            const userLon = pos.coords.longitude;
-            map.setView([userLat, userLon], 14);
-            L.circleMarker([userLat, userLon], {
-              radius: 8,
-              fillColor: '#2563eb',
-              color: '#ffffff',
-              weight: 2,
-              opacity: 1,
-              fillOpacity: 0.9
-            }).addTo(map).bindPopup('Ihr aktueller Standort').openPopup();
-          }, () => {
-            alert('Standort konnte nicht ermittelt werden.');
-          });
+          btnLocate.style.opacity = '0.5';
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              btnLocate.style.opacity = '1';
+              const userLat = pos.coords.latitude;
+              const userLon = pos.coords.longitude;
+              map.setView([userLat, userLon], 14);
+
+              const userMarker = L.circleMarker([userLat, userLon], {
+                radius: 9,
+                fillColor: '#2563eb',
+                color: '#ffffff',
+                weight: 3,
+                opacity: 1,
+                fillOpacity: 0.9
+              }).addTo(map);
+              userMarker.bindPopup("<strong>Ihr aktueller Standort</strong>").openPopup();
+            },
+            (err) => {
+              btnLocate.style.opacity = '1';
+              alert("Standort konnte nicht ermittelt werden. Bitte erlauben Sie den Zugriff in Ihrem Browser.");
+            },
+            { timeout: 8000 }
+          );
         });
       }
 
       // Fullscreen
-      const btnFs = document.getElementById('btn-map-fullscreen');
-      if (btnFs) {
-        btnFs.addEventListener('click', () => {
+      const btnFull = document.getElementById('btn-map-fullscreen');
+      if (btnFull) {
+        btnFull.addEventListener('click', () => {
+          const container = document.querySelector('.map-container-box');
           if (!document.fullscreenElement) {
-            el.requestFullscreen().catch(() => {});
+            if (container.requestFullscreen) {
+              container.requestFullscreen();
+            }
           } else {
-            document.exitFullscreen().catch(() => {});
+            if (document.exitFullscreen) {
+              document.exitFullscreen();
+            }
           }
         });
       }
@@ -361,7 +375,7 @@ const mappedData = validPharmacies.map(p => {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', initMap);
     } else {
-      initMap();
+      setTimeout(initMap, 200);
     }
   })();
 </script>

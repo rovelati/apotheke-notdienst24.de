@@ -29,16 +29,7 @@ export async function getStaticPaths() {
 
 const { pharmacy, bundesland } = Astro.props;
 
-// Calculate current status
-const now = new Date();
-const activeShift = (pharmacy.shifts || []).find((s: any) => {
-  const d = new Date(s.debut);
-  const f = new Date(s.fin);
-  return now >= d && now <= f;
-});
-
-const is24h = pharmacy.isOpen24h;
-const isNotdienst = is24h || Boolean(activeShift);
+const is24h = Boolean(pharmacy.isOpen24h);
 
 const mapUrl = (pharmacy.lat && pharmacy.lon)
   ? `https://www.google.com/maps/dir/?api=1&destination=${pharmacy.lat},${pharmacy.lon}`
@@ -51,6 +42,7 @@ function slugify(text: string): string {
 }
 
 const citySlug = slugify(pharmacy.ort);
+const kammerPortalUrl = bundesland.verifiedPortalUrl || pharmacy.kammerPortalUrl || 'https://www.aponet.de/apotheke/notdienstsuche';
 
 // Schema.org Pharmacy
 const pharmacyLd: any = {
@@ -88,8 +80,8 @@ if (pharmacy.googleRating) {
 ---
 
 <Base
-  title={`${pharmacy.name} in ${pharmacy.ort} (${pharmacy.plz}): Notdienst, Öffnungszeiten, Telefon | Apotheke-Notdienst24.de`}
-  description={`Erfahren Sie alles über ${pharmacy.name} in ${pharmacy.strasse}, ${pharmacy.plz} ${pharmacy.ort}. Aktueller Notdienstplan, Telefonnummer ${pharmacy.telephone || '116 117'}, Öffnungszeiten und Bewertungen.`}
+  title={`${pharmacy.name} in ${pharmacy.ort} (${pharmacy.plz}): Kontaktdaten, Öffnungszeiten, Notdienst-Info | Apotheke-Notdienst24.de`}
+  description={`Adresse, Telefonnummer und Notdienst-Informationen für ${pharmacy.name} in ${pharmacy.strasse}, ${pharmacy.plz} ${pharmacy.ort}. Bitte vorab anrufen oder beim Kammer-Portal prüfen.`}
   breadcrumbs={[
     { name: "Bundesländer", href: "/apotheken-notdienst/" },
     { name: bundesland.name, href: `/apotheken-notdienst/${bundesland.slug}/` },
@@ -106,11 +98,7 @@ if (pharmacy.googleRating) {
         <div class="status-badge-wrap">
           {is24h ? (
             <span class="badge badge-24h">
-              <span class="pulse-dot"></span> 24h Dauernd Geöffnet
-            </span>
-          ) : isNotdienst ? (
-            <span class="badge badge-notdienst">
-              <span class="pulse-dot"></span> JETZT NOTDIENST
+              <span class="pulse-dot"></span> 24h Dauerhaft Geöffnet
             </span>
           ) : (
             <span class="badge badge-normal">
@@ -131,7 +119,7 @@ if (pharmacy.googleRating) {
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/>
             </svg>
-            <span>Jetzt anrufen: {pharmacy.telephone}</span>
+            <span>Vor Anfahrt anrufen: {pharmacy.telephone}</span>
           </a>
         ) : (
           <a href="tel:116117" class="btn btn-call btn-call-generic btn-lg">
@@ -139,11 +127,20 @@ if (pharmacy.googleRating) {
           </a>
         )}
 
+        <a href={kammerPortalUrl} target="_blank" rel="noopener noreferrer nofollow" class="btn btn-kammer btn-lg">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          <span>Offizielles Kammerportal ↗</span>
+        </a>
+
         <a href={mapUrl} target="_blank" rel="noopener noreferrer" class="btn btn-route btn-lg">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M9 18l6-6-6-6"/>
           </svg>
-          <span>Route in Google Maps</span>
+          <span>Route</span>
         </a>
       </div>
 
@@ -174,55 +171,52 @@ if (pharmacy.googleRating) {
           </div>
         </div>
 
-        <!-- Details Right: Notdienst Rotas -->
+        <!-- Details Right: Notdienst Auskunft -->
         <div class="profile-col">
-          <h2 class="sub-title">Notdienstplan & Dienstzeiten</h2>
+          <h2 class="sub-title">Apotheken-Notdienst & Bereitschaft</h2>
           <div class="info-box notdienst-box">
-            {isNotdienst ? (
-              <div class="active-alert">
-                <strong>🔔 Notdienst aktuell aktiv!</strong>
-                <p>Diese Apotheke versieht jetzt den gesetzlichen 24h-Notdienst. Bitte klingeln Sie am Nachtschalter.</p>
-                {activeShift?.gebuehr && <p class="fee-text">{activeShift.gebuehr}</p>}
+            {is24h ? (
+              <div class="active-alert-24h">
+                <strong>🕒 24-Stunden-Apotheke</strong>
+                <p>Diese Apotheke bietet eine ständige 24h-Versorgung an 365 Tagen im Jahr (z. B. an großen Hauptbahnhöfen oder Flughäfen).</p>
               </div>
             ) : (
-              <p>Aktuell versieht diese Apotheke keinen Notdienst. In Notfällen wenden Sie sich an die Notdienst-Apotheke in der Nähe oder wählen Sie 116 117.</p>
+              <div class="kammer-card">
+                <div class="kammer-badge">🏛️ {bundesland.kammerName || 'Zuständige Landesapothekerkammer'}</div>
+                <p class="kammer-text">
+                  Der Notdienst in <strong>{pharmacy.ort}</strong> und ganz {bundesland.name} wird gemäß § 23 Apothekenbetriebsordnung (ApBetrO) tagesaktuell durch die Landesapothekerkammer geregelt.
+                </p>
+                <div class="kammer-action-wrap">
+                  <a href={kammerPortalUrl} target="_blank" rel="noopener noreferrer nofollow" class="btn-kammer-portal">
+                    <span>Zur verbindlichen Notdienst-Suche der Kammer ↗</span>
+                  </a>
+                </div>
+              </div>
             )}
 
-            <h3 class="schedule-head">Eingeteilte Notdienste der nächsten Tage:</h3>
-            <div class="shifts-list">
-              {(pharmacy.shifts || []).map((s: any) => {
-                const d = new Date(s.debut);
-                const f = new Date(s.fin);
-                const dateFmt = d.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
-                return (
-                  <div class="shift-row">
-                    <span class="shift-date">📅 {dateFmt}</span>
-                    <span class="shift-time">08:30 – 08:30 Uhr (24h)</span>
-                  </div>
-                );
-              })}
+            <div class="alert-safety my-3">
+              <strong>⚠️ Wichtiger Hinweis für Patienten:</strong>
+              <p>
+                Notdienst-Einteilungen können kurzfristig wechseln (z. B. krankheitsbedingt). <strong>Rufen Sie die Apotheke bitte vor Fahrtantritt unter {pharmacy.telephone || 'der Notfallnummer 116 117'} an</strong>, um die tatsächliche Notdienstbereitschaft abzuklären.
+              </p>
+              <p class="fee-notice">
+                Außerhalb der regulären Ladenöffnungszeiten fällt die gesetzliche Notdienstgebühr in Höhe von <strong>2,50 €</strong> an (§ 6 AMPreisV), es sei denn, ein dringendes Rezept ist mit dem Vermerk „noctu“ gekennzeichnet.
+              </p>
             </div>
           </div>
 
-          <!-- Reviews Box -->
+          <!-- Rating Box -->
           {pharmacy.googleRating && (
             <div class="info-box my-3">
-              <h2 class="sub-title">Patienten-Bewertungen</h2>
+              <h2 class="sub-title">Bewertung</h2>
               <div class="rating-large">
                 <span class="rating-big-star">★</span>
                 <span class="rating-big-val">{pharmacy.googleRating.toFixed(1)}</span>
-                <span class="rating-big-count">({pharmacy.googleReviewsTotal || 0} Bewertungen)</span>
+                <span class="rating-big-count">({pharmacy.googleReviewsTotal || 0} Google-Bewertungen)</span>
               </div>
-              {pharmacy.googleReviews && pharmacy.googleReviews.length > 0 && (
-                <div class="reviews-list my-2">
-                  {pharmacy.googleReviews.map((r: any) => (
-                    <div class="review-item">
-                      <div class="review-author"><strong>{r.author}</strong> ★ {r.rating}/5</div>
-                      <p class="review-text">"{r.text}"</p>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <p class="rating-legal-note">
+                Hinweis gem. § 5b Abs. 3 UWG: Die Bewertungen stammen von Google-Unternehmensprofilen Dritter und werden von uns nicht auf eine tatsächliche Inanspruchnahme der Leistungen überprüft.
+              </p>
             </div>
           )}
         </div>
@@ -259,18 +253,15 @@ if (pharmacy.googleRating) {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 4px 12px;
+    padding: 6px 14px;
     border-radius: var(--radius-full);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-weight: 700;
     text-transform: uppercase;
-  }
-  .badge-notdienst {
-    background: #dc2626;
-    color: #ffffff;
+    letter-spacing: 0.04em;
   }
   .badge-24h {
-    background: var(--cross);
+    background: #059669;
     color: #ffffff;
   }
   .badge-normal {
@@ -281,22 +272,26 @@ if (pharmacy.googleRating) {
   .profile-actions-bar {
     display: flex;
     gap: 12px;
-    margin-bottom: 2rem;
     flex-wrap: wrap;
+    margin-bottom: 2rem;
   }
   .btn-lg {
-    padding: 12px 24px;
+    padding: 12px 20px;
     font-size: 1rem;
-    font-weight: 700;
     border-radius: var(--radius-sm);
+    font-weight: 700;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    transition: all 0.15s ease;
   }
   .btn-call {
     background: #dc2626;
     color: #ffffff;
+    flex: 1.2;
+    min-width: 220px;
   }
   .btn-call:hover {
     background: #b91c1c;
@@ -305,10 +300,22 @@ if (pharmacy.googleRating) {
   .btn-call-generic {
     background: #0284c7;
   }
+  .btn-kammer {
+    background: #1e293b;
+    color: #ffffff;
+    flex: 1.2;
+    min-width: 220px;
+  }
+  .btn-kammer:hover {
+    background: #0f172a;
+    text-decoration: none;
+  }
   .btn-route {
-    background: var(--surface-2);
+    background: var(--surface);
     color: var(--ink);
     border: 1px solid var(--line);
+    flex: 0.8;
+    min-width: 140px;
   }
   .btn-route:hover {
     background: var(--surface-hover);
@@ -319,22 +326,27 @@ if (pharmacy.googleRating) {
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
   }
+  @media (max-width: 768px) {
+    .profile-grid {
+      grid-template-columns: 1fr;
+    }
+  }
   .sub-title {
     font-size: 1.25rem;
     font-weight: 800;
-    margin: 0 0 0.8rem;
     color: var(--ink);
+    margin-bottom: 0.8rem;
   }
   .info-box {
     background: var(--surface-2);
     border: 1px solid var(--line);
-    padding: 1.25rem;
     border-radius: var(--radius-md);
-    font-size: 0.95rem;
+    padding: 1.4rem;
   }
   .info-box p {
-    margin: 0 0 8px;
-    line-height: 1.5;
+    margin: 0 0 0.6rem;
+    font-size: 0.95rem;
+    color: var(--ink-secondary);
   }
   .info-box p:last-child {
     margin-bottom: 0;
@@ -346,90 +358,97 @@ if (pharmacy.googleRating) {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    font-size: 0.92rem;
+    color: var(--ink-secondary);
   }
-  .notdienst-box {
-    border-left: 4px solid #dc2626;
-  }
-  .active-alert {
-    background: #fee2e2;
-    color: #991b1b;
-    padding: 10px 14px;
+  .active-alert-24h {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    padding: 12px 14px;
     border-radius: var(--radius-sm);
     margin-bottom: 1rem;
-    font-size: 0.9rem;
-  }
-  :global([data-theme="dark"]) .active-alert {
-    background: rgba(220, 38, 38, 0.2);
-    color: #fca5a5;
-  }
-  .fee-text {
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-top: 4px;
-  }
-  .schedule-head {
     font-size: 0.95rem;
-    font-weight: 700;
-    margin: 1rem 0 0.5rem;
-    color: var(--ink);
+    line-height: 1.5;
   }
-  .shifts-list {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-  }
-  .shift-row {
-    display: flex;
-    justify-content: space-between;
-    background: var(--surface);
-    padding: 8px 12px;
-    border-radius: var(--radius-sm);
-    font-size: 0.88rem;
+  .kammer-card {
+    background: #ffffff;
     border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    margin-bottom: 1rem;
+  }
+  :global([data-theme="dark"]) .kammer-card {
+    background: var(--surface);
+  }
+  .kammer-badge {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .kammer-text {
+    font-size: 0.88rem;
+    color: var(--ink-secondary);
+    line-height: 1.45;
+    margin: 0 0 10px;
+  }
+  .btn-kammer-portal {
+    display: inline-block;
+    background: #0284c7;
+    color: #ffffff;
+    padding: 9px 14px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  .btn-kammer-portal:hover {
+    background: #0369a1;
+    text-decoration: none;
+  }
+  .alert-safety {
+    background: #fff1f2;
+    border-left: 4px solid #dc2626;
+    padding: 12px 14px;
+    border-radius: 4px;
+    color: #881337;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+  .alert-safety p {
+    margin: 0 0 6px;
+    color: #881337;
+  }
+  .fee-notice {
+    font-size: 0.82rem;
+    color: #9f1239;
+    margin-top: 6px;
   }
   .rating-large {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
+    margin-bottom: 8px;
   }
   .rating-big-star {
+    font-size: 1.8rem;
     color: var(--gold);
-    font-size: 1.5rem;
   }
   .rating-big-val {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     font-weight: 800;
     color: var(--ink);
   }
   .rating-big-count {
-    font-size: 0.9rem;
     color: var(--muted);
+    font-size: 0.9rem;
   }
-  .reviews-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .review-item {
-    background: var(--surface);
-    padding: 10px 12px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--line);
-  }
-  .review-author {
-    font-size: 0.85rem;
-    color: var(--ink);
-    margin-bottom: 4px;
-  }
-  .review-text {
-    font-size: 0.85rem;
-    font-style: italic;
-    color: var(--ink-secondary);
-    margin: 0;
-  }
-  @media (max-width: 800px) {
-    .profile-grid {
-      grid-template-columns: 1fr;
-    }
+  .rating-legal-note {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.4;
+    margin-top: 6px;
   }
 </style>

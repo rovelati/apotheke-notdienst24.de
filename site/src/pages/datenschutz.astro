@@ -3,51 +3,95 @@ import Base from '../layouts/Base.astro';
 ---
 
 <Base
-  title="Datenschutzerklärung (DSGVO) | Apotheke-Notdienst24.de"
-  description="Datenschutzerklärung gemäß Datenschutz-Grundverordnung (DSGVO) und TTDSG für Apotheke-Notdienst24.de."
+  title="Datenschutzerklärung (DSGVO & TDDDG) | Apotheke-Notdienst24.de"
+  description="Datenschutzerklärung gemäß Datenschutz-Grundverordnung (DSGVO) und Telekommunikation-Digitale-Dienste-Datenschutz-Gesetz (TDDDG) für Apotheke-Notdienst24.de."
   breadcrumbs={[{ name: "Datenschutz", href: "/datenschutz/" }]}
 >
   <div class="wrap my-4 legal-container">
     <h1>Datenschutzerklärung</h1>
-    <p class="legal-sub">Informationen über die Verarbeitung Ihrer personenbezogenen Daten gemäß DSGVO und TTDSG</p>
+    <p class="legal-sub">Informationen über die Verarbeitung Ihrer personenbezogenen Daten gemäß DSGVO und TDDDG</p>
 
     <div class="legal-box my-3">
       <h2>1. Datenschutz auf einen Blick</h2>
       <p>
-        Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können. Nachfolgend geben wir Ihnen einen Überblick darüber, was mit Ihren personenbezogenen Daten passiert, wenn Sie unsere Webseite besuchen.
+        Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können. Die nachfolgende Erklärung erläutert, welche Daten wir erheben, wofür wir sie nutzen und welche Rechte Ihnen zustehen.
       </p>
 
-      <h2>2. Verantwortliche Stelle</h2>
+      <h2>2. Verantwortliche Stelle (Art. 4 Nr. 7 DSGVO)</h2>
       <p>
-        Verantwortlich für die Datenverarbeitung auf dieser Webseite:<br />
-        <strong>Apotheke-Notdienst24</strong><br />
+        Verantwortlich für die Datenverarbeitung auf dieser Internetseite ist:<br />
+        <strong>Romolo Velati</strong><br />
+        Apotheke-Notdienst24<br />
+        Via Roma 1<br />
+        20121 Milano (MI), Italien<br />
         E-Mail: <a href="mailto:info@apotheke-notdienst24.de">info@apotheke-notdienst24.de</a>
       </p>
 
-      <h2>3. Standortbestimmung (Geolocation API)</h2>
+      <h2>3. Bereitstellung der Website und Server-Logfiles</h2>
       <p>
-        Auf unserer Seite "In meiner Nähe" bieten wir Ihnen die Möglichkeit, über die Standortfunktion Ihres Browsers (HTML5 Geolocation API) nach nahegelegenen Notdienst-Apotheken zu suchen.
-        Diese Standortermittlung erfolgt <strong>ausschließlich nach Ihrer ausdrücklichen Einwilligung</strong> (Art. 6 Abs. 1 lit. a DSGVO) durch Bestätigung des Browser-Dialogs. Ihre Koordinaten werden nur lokal in Ihrem Browser zur Entfernungsberechnung verwendet und nicht auf unseren Servern dauerhaft gespeichert.
+        Beim Aufruf unserer Website erfasst der Provider (Cloudflare / Webserver) automatisiert Informationen, die Ihr Browser an uns übermittelt (sog. Server-Logfiles):
+      </p>
+      <ul>
+        <li>Browsertyp und Browserversion</li>
+        <li>Verwendetes Betriebssystem</li>
+        <li>Referrer URL (die zuvor besuchte Seite)</li>
+        <li>Hostname des zugreifenden Rechners / IP-Adresse (anonymisiert bzw. gekürzt)</li>
+        <li>Uhrzeit der Serveranfrage</li>
+      </ul>
+      <p>
+        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Unser berechtigtes Interesse liegt in der technisch fehlerfreien Darstellung, Stabilität und Abwehr von Cyberangriffen (DDoS-Schutz via Cloudflare).
       </p>
 
-      <h2>4. Google Consent Mode v2 & Cookie-Einwilligung (CMP)</h2>
+      <h2>4. Standortbestimmung (HTML5 Geolocation API)</h2>
       <p>
-        Unsere Webseite nutzt den Google Consent Mode v2 in Verbindung mit einer TCF v2.2-zertifizierten Consent Management Platform (Google Funding Choices). Beim ersten Aufruf der Seite werden Marketing- und Analyse-Cookies standardmäßig blockiert (default denied). Erst wenn Sie über das Cookie-Banner aktiv einwilligen, werden entsprechende Dienste aktiviert (Art. 6 Abs. 1 lit. a DSGVO).
+        Auf unserer Seite „Apotheke in meiner Nähe“ bieten wir Ihnen eine Umkreissuche an. Die Ermittlung Ihrer Geokoordinaten (Breitengrad/Längengrad) erfolgt <strong>ausschließlich nach Ihrer vorherigen, ausdrücklichen Einwilligung</strong> im Browser (Art. 6 Abs. 1 lit. a DSGVO).
+      </p>
+      <p>
+        <strong>Wichtig:</strong> Die Berechnung der Entfernungen zu umliegenden Apotheken findet ausschließlich lokal in Ihrem Webbrowser (Client-seitig mittels JavaScript) statt. Ihre Koordinaten werden zu keinem Zeitpunkt auf unseren Servern gespeichert oder mit einem Nutzerprofil verknüpft. Sie können die Standortfreigabe in den Browsereinstellungen jederzeit widerrufen.
       </p>
 
-      <h2>5. Google Analytics 4 (GA4)</h2>
+      <h2>5. Google Consent Mode v2 & Cookie-Einwilligung (CMP nach § 25 TDDDG)</h2>
       <p>
-        Diese Webseite nutzt Google Analytics 4, einen Webanalysedienst der Google Ireland Limited ("Google"), Gordon House, Barrow Street, Dublin 4, Irland. Google Analytics verwendet Cookies nur nach Ihrer ausdrücklichen Einwilligung. Die IP-Anonymisierung ist in GA4 standardmäßig aktiv.
+        Wir setzen den Google Consent Mode v2 in Verbindung mit einer IAB TCF v2.2 zertifizierten Consent Management Platform (Google Funding Choices) ein.
+      </p>
+      <p>
+        Beim ersten Aufruf unserer Seite werden werbe- und analysebezogene Cookies und Skripte standardmäßig blockiert (<code>default: denied</code> gemäß § 25 Abs. 1 TDDDG). Erst wenn Sie im Cookie-Banner aktiv Ihre Zustimmung erteilen, werden Analyse- oder Werbefunktionen aktiviert (Art. 6 Abs. 1 lit. a DSGVO). Sie können Ihre Präferenzen jederzeit über den Link zur Cookie-Einstellung im Footer anpassen.
       </p>
 
-      <h2>6. Google AdSense</h2>
+      <h2>6. Google Analytics 4 (GA4)</h2>
       <p>
-        Diese Webseite verwendet Google AdSense, einen Dienst zum Einbinden von Werbeanzeigen. Wenn Sie über unsere CMP eingewilligt haben, können personalisierte Anzeigen geschaltet werden. Andernfalls werden nicht-personalisierte Anzeigen ausgeliefert, die keine Nutzerprofile anlegen.
+        Soweit Sie eingewilligt haben, nutzen wir Google Analytics 4, einen Webanalysedienst der Google Ireland Limited („Google“), Gordon House, Barrow Street, Dublin 4, Irland. 
+        Google Analytics verwendet Cookies zur Reichweitenmessung. Die IP-Anonymisierung ist in GA4 standardmäßig aktiv; IP-Adressen werden von Google vor der Speicherung gekürzt. Google ist nach dem EU-US Data Privacy Framework (DPF) zertifiziert. Rechtsgrundlage ist Art. 6 Abs. 1 lit. a DSGVO (Einwilligung).
       </p>
 
-      <h2>7. Ihre Rechte gemäß DSGVO</h2>
+      <h2>7. Google AdSense</h2>
       <p>
-        Sie haben jederzeit das Recht auf unentgeltliche Auskunft über Ihre gespeicherten personenbezogenen Daten, deren Herkunft und Empfänger und den Zweck der Datenverarbeitung (Art. 15 DSGVO) sowie ein Recht auf Berichtigung (Art. 16 DSGVO), Löschung (Art. 17 DSGVO) oder Einschränkung der Verarbeitung (Art. 18 DSGVO). Zudem haben Sie das Recht auf Datenübertragbarkeit (Art. 20 DSGVO) sowie das Recht auf Beschwerde bei einer Datenschutz-Aufsichtsbehörde (Art. 77 DSGVO).
+        Soweit Sie eingewilligt haben, verwenden wir Google AdSense zur Einbindung von Werbeanzeigen. Ohne Ihre explizite Einwilligung werden ausschließlich kontextbezogene, nicht-personalisierte Anzeigen ausgeliefert, die keine Nutzerprofile bilden. Rechtsgrundlage ist Ihre Einwilligung gem. Art. 6 Abs. 1 lit. a DSGVO sowie § 25 Abs. 1 TDDDG.
+      </p>
+
+      <h2>8. Interaktive Karten (OpenStreetMap / Leaflet)</h2>
+      <p>
+        Zur Visualisierung von Apothekenstandorten binden wir interaktive Karten auf Basis von OpenStreetMap ein. Beim Abruf der Kartenelemente (Kachel-Bilder) wird Ihre IP-Adresse an die Server der OpenStreetMap Foundation (OSMF, St John’s Innovation Centre, Cowley Road, Cambridge, CB4 0WS, UK) übermittelt, um Ihnen die Karte darzustellen.
+      </p>
+      <p>
+        Rechtsgrundlage hierfür ist unser berechtigtes Interesse an einer ansprechenden, leicht auffindbaren Darstellung von Notdienst-Apotheken gem. Art. 6 Abs. 1 lit. f DSGVO. Das Vereinigte Königreich (UK) verfügt über einen Angemessenheitsbeschluss der Europäischen Kommission.
+      </p>
+
+      <h2>9. Ihre Rechte nach der DSGVO</h2>
+      <p>
+        Als betroffene Person stehen Ihnen gemäß Datenschutz-Grundverordnung umfangreiche Rechte zu:
+      </p>
+      <ul>
+        <li><strong>Auskunftsrecht (Art. 15 DSGVO):</strong> Sie haben das Recht, unentgeltlich Auskunft über Ihre von uns verarbeiteten personenbezogenen Daten zu verlangen.</li>
+        <li><strong>Recht auf Berichtigung (Art. 16 DSGVO):</strong> Sie können die unverzügliche Berichtigung unrichtiger Daten verlangen.</li>
+        <li><strong>Recht auf Löschung (Art. 17 DSGVO):</strong> Sie können unter den Voraussetzungen des Art. 17 DSGVO die Löschung Ihrer Daten verlangen.</li>
+        <li><strong>Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO):</strong> Sie können die Einschränkung der Verarbeitung verlangen.</li>
+        <li><strong>Widerspruchsrecht (Art. 21 DSGVO):</strong> Sie können der Verarbeitung jederzeit widersprechen, soweit diese auf Art. 6 Abs. 1 lit. f DSGVO gestützt wird.</li>
+        <li><strong>Widerruf von Einwilligungen:</strong> Sie können erteilte Einwilligungen (z. B. Geolocation, Cookies) jederzeit mit Wirkung für die Zukunft widerrufen.</li>
+        <li><strong>Beschwerderecht bei einer Aufsichtsbehörde (Art. 77 DSGVO):</strong> Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbehörde über die Verarbeitung Ihrer personenbezogenen Daten zu beschweren.</li>
+      </ul>
+      <p>
+        Zur Ausübung Ihrer Rechte wenden Sie sich bitte einfach per E-Mail an: <a href="mailto:info@apotheke-notdienst24.de">info@apotheke-notdienst24.de</a>.
       </p>
     </div>
   </div>
@@ -55,7 +99,7 @@ import Base from '../layouts/Base.astro';
 
 <style>
   .legal-container {
-    max-width: 800px;
+    max-width: 820px;
   }
   .legal-container h1 {
     font-size: 2.2rem;
@@ -74,14 +118,14 @@ import Base from '../layouts/Base.astro';
     border-radius: var(--radius-md);
     padding: 2rem;
     box-shadow: var(--shadow-sm);
-    line-height: 1.6;
+    line-height: 1.65;
     color: var(--ink-secondary);
   }
   .legal-box h2 {
-    font-size: 1.15rem;
+    font-size: 1.2rem;
     font-weight: 800;
     color: var(--ink);
-    margin: 1.5rem 0 0.5rem;
+    margin: 1.8rem 0 0.6rem;
   }
   .legal-box h2:first-child {
     margin-top: 0;
@@ -89,6 +133,13 @@ import Base from '../layouts/Base.astro';
   .legal-box p {
     margin: 0 0 1rem;
     font-size: 0.95rem;
+  }
+  .legal-box ul {
+    margin: 0 0 1rem 1.4rem;
+    font-size: 0.95rem;
+  }
+  .legal-box li {
+    margin-bottom: 0.4rem;
   }
   .legal-box a {
     color: #dc2626;

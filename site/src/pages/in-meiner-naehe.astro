@@ -180,11 +180,11 @@ for (const path in allShards) {
           const nearest = withDist.slice(0, 15);
 
           cardsList.innerHTML = nearest.map(p => `
-            <div class="card pharmacy-card ${p.isOpen24h ? 'is-notdienst' : ''}" style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;justify-content:space-between;gap:12px;">
+            <div class="card pharmacy-card ${p.isOpen24h ? 'is-24h' : ''}" style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;justify-content:space-between;gap:10px;">
               <div>
                 <div style="display:flex;justify-content:space-between;margin-bottom:8px;align-items:center;">
-                  <span style="background:${p.isOpen24h ? '#dc2626' : '#0284c7'};color:white;padding:3px 8px;border-radius:99px;font-size:11px;font-weight:bold;">
-                    ${p.isOpen24h ? '24h Dauernd Geöffnet' : 'Notdienstbereit'}
+                  <span style="background:${p.isOpen24h ? '#059669' : '#1e293b'};color:white;padding:3px 8px;border-radius:99px;font-size:11px;font-weight:bold;">
+                    ${p.isOpen24h ? '24h Dauerhaft Geöffnet' : 'Apotheke'}
                   </span>
                   <span style="font-size:12px;font-weight:bold;color:var(--ink-secondary);background:var(--surface-2);padding:3px 8px;border-radius:99px;">
                     📍 ${p.distanceKm.toFixed(1)} km entfernt
@@ -192,9 +192,10 @@ for (const path in allShards) {
                 </div>
                 <h3 style="margin:0 0 6px;font-size:1.15rem;font-weight:bold;"><a href="/apotheke/${p.slug}/" style="color:var(--ink);text-decoration:none;">${p.name}</a></h3>
                 <p style="margin:0;font-size:0.9rem;color:var(--ink-secondary);">${p.strasse}, ${p.plz} ${p.ort}</p>
+                <p style="margin:6px 0 0;font-size:0.78rem;color:#64748b;">⚠️ Dienstbereitschaft vor Fahrtantritt bitte immer telefonisch rückbestätigen.</p>
               </div>
               <div style="display:flex;gap:8px;margin-top:8px;">
-                ${p.telephone ? `<a href="tel:${p.telephone.replace(/\s+/g,'')}" style="flex:1;text-align:center;padding:10px;background:#dc2626;color:white;border-radius:8px;font-size:0.9rem;font-weight:bold;text-decoration:none;">📞 ${p.telephone}</a>` : `<a href="tel:116117" style="flex:1;text-align:center;padding:10px;background:#0284c7;color:white;border-radius:8px;font-size:0.9rem;font-weight:bold;text-decoration:none;">116 117 anrufen</a>`}
+                ${p.telephone ? `<a href="tel:${p.telephone.replace(/\s+/g,'')}" style="flex:1;text-align:center;padding:10px;background:#dc2626;color:white;border-radius:8px;font-size:0.9rem;font-weight:bold;text-decoration:none;">📞 Vorab anrufen</a>` : `<a href="tel:116117" style="flex:1;text-align:center;padding:10px;background:#0284c7;color:white;border-radius:8px;font-size:0.9rem;font-weight:bold;text-decoration:none;">116 117 anrufen</a>`}
                 <a href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}" target="_blank" style="padding:10px 14px;background:var(--surface-2);color:var(--ink);border:1px solid var(--line);border-radius:8px;font-size:0.9rem;font-weight:bold;text-decoration:none;">Route</a>
               </div>
             </div>

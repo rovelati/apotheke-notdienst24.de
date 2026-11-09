@@ -43,14 +43,7 @@ function slugify(text: string): string {
 }
 
 const now = new Date();
-const activePharmacies = pharmacies.filter(p => {
-  if (p.isOpen24h) return true;
-  return (p.shifts || []).some((s: any) => {
-    const d = new Date(s.debut);
-    const f = new Date(s.fin);
-    return now >= d && now <= f;
-  });
-});
+const featuredInState = pharmacies.slice(0, 16);
 ---
 
 <Base
@@ -69,8 +62,14 @@ const activePharmacies = pharmacies.filter(p => {
       <div>
         <h1 class="land-title">Apotheken-Notdienst {bundesland.name}</h1>
         <p class="land-sub">
-          Offizieller 24-Stunden Notdienstplan für {bundesland.name} (Landeshauptstadt: {bundesland.capital}). Gesetzliche Notdienstbereitschaft gemäß ApBetrO § 23.
+          Apotheken-Verzeichnis und Notdienst-Auskunft für {bundesland.name} (Landeshauptstadt: {bundesland.capital}).
         </p>
+        <div class="kammer-link-row my-2">
+          <span>Zuständig: <strong>{bundesland.kammerName}</strong></span>
+          <a href={bundesland.verifiedPortalUrl} target="_blank" rel="noopener noreferrer nofollow" class="btn-kammer-official">
+            Offizielles Notdienstportal öffnen ↗
+          </a>
+        </div>
       </div>
     </div>
 
@@ -81,7 +80,7 @@ const activePharmacies = pharmacies.filter(p => {
 
     <!-- Map Section -->
     <div class="my-4">
-      <h2 class="section-title">Karte der Notdienst-Apotheken in {bundesland.name}</h2>
+      <h2 class="section-title">Karte der Apotheken in {bundesland.name}</h2>
       <PharmacyMap pharmacies={pharmacies} center={[bundesland.lat, bundesland.lon]} zoom={8} cityName={bundesland.name} />
     </div>
 
@@ -103,11 +102,11 @@ const activePharmacies = pharmacies.filter(p => {
       <AdSlot slot="6789012345" />
     </div>
 
-    <!-- Active Duty Pharmacies in this state -->
+    <!-- Pharmacies in this state -->
     <div class="my-4">
-      <h2 class="section-title">Heute dienstbereite Apotheken ({activePharmacies.length})</h2>
+      <h2 class="section-title">Apotheken in {bundesland.name} ({pharmacies.length})</h2>
       <div class="cards-grid my-3">
-        {activePharmacies.map(p => (
+        {featuredInState.map(p => (
           <PharmacyCard pharmacy={p} />
         ))}
       </div>
@@ -149,6 +148,27 @@ const activePharmacies = pharmacies.filter(p => {
     color: var(--ink-secondary);
     margin: 0;
     line-height: 1.5;
+  }
+  .kammer-link-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    margin-top: 10px;
+  }
+  .btn-kammer-official {
+    background: #0284c7;
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.85rem;
+  }
+  .btn-kammer-official:hover {
+    background: #0369a1;
+    text-decoration: none;
   }
   .section-title {
     font-size: 1.4rem;

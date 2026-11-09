@@ -5,7 +5,10 @@
     "slug": "baden-wuerttemberg",
     "capital": "Stuttgart",
     "lat": 48.6616,
-    "lon": 9.3501
+    "lon": 9.3501,
+    "kammerName": "Landesapothekerkammer Baden-Württemberg",
+    "kammerUrl": "https://www.lak-bw.de",
+    "verifiedPortalUrl": "https://www.lak-bw.de/notdienstportal"
   },
   {
     "code": "BY",
@@ -13,7 +16,10 @@
     "slug": "bayern",
     "capital": "München",
     "lat": 48.7904,
-    "lon": 11.4979
+    "lon": 11.4979,
+    "kammerName": "Bayerische Landesapothekerkammer (BLAK)",
+    "kammerUrl": "https://www.blak.de",
+    "verifiedPortalUrl": "https://www.blak.de/notdienst"
   },
   {
     "code": "BE",
@@ -21,7 +27,10 @@
     "slug": "berlin",
     "capital": "Berlin",
     "lat": 52.52,
-    "lon": 13.405
+    "lon": 13.405,
+    "kammerName": "Apothekerkammer Berlin",
+    "kammerUrl": "https://www.ak-berlin.de",
+    "verifiedPortalUrl": "https://www.ak-berlin.de/notdienstsuche"
   },
   {
     "code": "BB",
@@ -29,7 +38,10 @@
     "slug": "brandenburg",
     "capital": "Potsdam",
     "lat": 52.4125,
-    "lon": 12.5316
+    "lon": 12.5316,
+    "kammerName": "Landesapothekerkammer Brandenburg",
+    "kammerUrl": "https://www.lakbb.de",
+    "verifiedPortalUrl": "https://www.lakbb.de/fuer-buerger/notdienst-apotheken"
   },
   {
     "code": "HB",
@@ -37,7 +49,10 @@
     "slug": "bremen",
     "capital": "Bremen",
     "lat": 53.0793,
-    "lon": 8.8017
+    "lon": 8.8017,
+    "kammerName": "Apothekerkammer Bremen",
+    "kammerUrl": "https://www.apothekerkammer-bremen.de",
+    "verifiedPortalUrl": "https://www.apothekerkammer-bremen.de/notdienst"
   },
   {
     "code": "HH",
@@ -45,7 +60,10 @@
     "slug": "hamburg",
     "capital": "Hamburg",
     "lat": 53.5511,
-    "lon": 9.9937
+    "lon": 9.9937,
+    "kammerName": "Apothekerkammer Hamburg",
+    "kammerUrl": "https://www.apothekerkammer-hamburg.de",
+    "verifiedPortalUrl": "https://www.apothekerkammer-hamburg.de/notdienst"
   },
   {
     "code": "HE",
@@ -53,7 +71,10 @@
     "slug": "hessen",
     "capital": "Wiesbaden",
     "lat": 50.6521,
-    "lon": 9.1624
+    "lon": 9.1624,
+    "kammerName": "Landesapothekerkammer Hessen",
+    "kammerUrl": "https://www.apothekerkammer.de",
+    "verifiedPortalUrl": "https://www.apothekerkammer.de/notdienstsuche"
   },
   {
     "code": "MV",
@@ -61,7 +82,10 @@
     "slug": "mecklenburg-vorpommern",
     "capital": "Schwerin",
     "lat": 53.6127,
-    "lon": 12.4296
+    "lon": 12.4296,
+    "kammerName": "Apothekerkammer Mecklenburg-Vorpommern",
+    "kammerUrl": "https://www.akmv.de",
+    "verifiedPortalUrl": "https://www.akmv.de/notdienstsuche"
   },
   {
     "code": "NI",
@@ -69,7 +93,10 @@
     "slug": "niedersachsen",
     "capital": "Hannover",
     "lat": 52.6367,
-    "lon": 9.8451
+    "lon": 9.8451,
+    "kammerName": "Apothekerkammer Niedersachsen",
+    "kammerUrl": "https://www.apothekerkammer-niedersachsen.de",
+    "verifiedPortalUrl": "https://www.apothekerkammer-niedersachsen.de/notdienst"
   },
   {
     "code": "NW",
@@ -77,7 +104,10 @@
     "slug": "nordrhein-westfalen",
     "capital": "Düsseldorf",
     "lat": 51.4332,
-    "lon": 7.6616
+    "lon": 7.6616,
+    "kammerName": "Apothekerkammern Nordrhein (AKNR) & Westfalen-Lippe (AKWL)",
+    "kammerUrl": "https://www.aknr.de",
+    "verifiedPortalUrl": "https://www.apothekennotdienst-nrw.de"
   },
   {
     "code": "RP",
@@ -85,7 +115,10 @@
     "slug": "rheinland-pfalz",
     "capital": "Mainz",
     "lat": 49.9134,
-    "lon": 7.4542
+    "lon": 7.4542,
+    "kammerName": "Landesapothekerkammer Rheinland-Pfalz",
+    "kammerUrl": "https://www.lak-rlp.de",
+    "verifiedPortalUrl": "https://www.lak-rlp.de/notdienst"
   },
   {
     "code": "SL",
@@ -93,7 +126,10 @@
     "slug": "saarland",
     "capital": "Saarbrücken",
     "lat": 49.3964,
-    "lon": 7.023
+    "lon": 7.023,
+    "kammerName": "Apothekerkammer des Saarlandes",
+    "kammerUrl": "https://www.apothekerkammer-saar.de",
+    "verifiedPortalUrl": "https://www.apothekerkammer-saar.de/notdienst"
   },
   {
     "code": "SN",
@@ -101,7 +137,10 @@
     "slug": "sachsen",
     "capital": "Dresden",
     "lat": 51.1045,
-    "lon": 13.2017
+    "lon": 13.2017,
+    "kammerName": "Sächsische Landesapothekerkammer (SLAK)",
+    "kammerUrl": "https://www.slak.de",
+    "verifiedPortalUrl": "https://www.slak.de/fuer-buerger/notdienstsuche"
   },
   {
     "code": "ST",
@@ -109,7 +148,10 @@
     "slug": "sachsen-anhalt",
     "capital": "Magdeburg",
     "lat": 51.9503,
-    "lon": 11.6923
+    "lon": 11.6923,
+    "kammerName": "Apothekerkammer Sachsen-Anhalt",
+    "kammerUrl": "https://www.ak-sa.de",
+    "verifiedPortalUrl": "https://www.ak-sa.de/notdienst.html"
   },
   {
     "code": "SH",
@@ -117,7 +159,10 @@
     "slug": "schleswig-holstein",
     "capital": "Kiel",
     "lat": 54.2194,
-    "lon": 9.6961
+    "lon": 9.6961,
+    "kammerName": "Apothekerkammer Schleswig-Holstein",
+    "kammerUrl": "https://www.ak-sh.de",
+    "verifiedPortalUrl": "https://www.ak-sh.de/notdienstkalender"
   },
   {
     "code": "TH",
@@ -125,6 +170,9 @@
     "slug": "thueringen",
     "capital": "Erfurt",
     "lat": 50.8522,
-    "lon": 11.0189
+    "lon": 11.0189,
+    "kammerName": "Landesapothekerkammer Thüringen",
+    "kammerUrl": "https://www.lakt.de",
+    "verifiedPortalUrl": "https://www.lakt.de/buerger/notdienstapotheken-finden"
   }
 ]

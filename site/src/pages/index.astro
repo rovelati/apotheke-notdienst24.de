@@ -18,16 +18,11 @@ for (const path in allShards) {
   }
 }
 
-// Top duty pharmacies today
-const now = new Date();
-const activeDutyPharmacies = allPharmacies.filter(p => {
-  if (p.isOpen24h) return true;
-  return (p.shifts || []).some((s: any) => {
-    const d = new Date(s.debut);
-    const f = new Date(s.fin);
-    return now >= d && now <= f;
-  });
-}).slice(0, 12);
+// Featured pharmacies: permanent 24h pharmacies first, then central pharmacies
+const featuredPharmacies = allPharmacies
+  .filter(p => p.isOpen24h)
+  .concat(allPharmacies.filter(p => !p.isOpen24h))
+  .slice(0, 12);
 
 // Major cities for quick links
 const topCities = [
@@ -149,17 +144,17 @@ const faqLd = {
     </div>
   </section>
 
-  <!-- Live Active Duty Pharmacies -->
+  <!-- Featured Pharmacies -->
   <section class="wrap my-4">
     <div class="section-head">
       <div>
-        <h2 class="section-title">Aktuell dienstbereite Notapotheken</h2>
-        <p class="section-sub">Apotheken mit aktivem 24h-Notdienst oder ständiger Notdienstbereitschaft.</p>
+        <h2 class="section-title">Ausgewählte Notdienst- & 24h-Apotheken</h2>
+        <p class="section-sub">Ständige 24-Stunden-Apotheken und zentrale Notdienst-Anlaufstellen. Bitte vorab anrufen!</p>
       </div>
     </div>
 
     <div class="cards-grid">
-      {activeDutyPharmacies.map(p => (
+      {featuredPharmacies.map(p => (
         <PharmacyCard pharmacy={p} />
       ))}
     </div>
