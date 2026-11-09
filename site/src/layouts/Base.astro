@@ -39,19 +39,29 @@ const breadcrumbLd = breadcrumbs.length
     }
   : null;
 
-const orgLd = {
-  '@context': 'https://schema.org',
-  '@type': 'MedicalWebPage',
-  'name': 'Apotheke-Notdienst24.de',
-  'url': SITE,
-  'description': 'Bundesweites Verzeichnis der Notdienst-Apotheken heute, heute Nacht, sonntags und an Feiertagen in Deutschland.',
-  'publisher': {
-    '@type': 'Organization',
-    'name': 'Apotheke-Notdienst24',
-    'email': 'info@apotheke-notdienst24.de',
-    'url': SITE,
-  }
-};
+const isLegalPage = Astro.url.pathname.startsWith('/datenschutz') || Astro.url.pathname.startsWith('/impressum');
+
+const orgLd = isLegalPage
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'WebPage',
+      'name': title,
+      'url': canonical,
+      'description': description,
+    }
+  : {
+      '@context': 'https://schema.org',
+      '@type': 'MedicalWebPage',
+      'name': 'Apotheke-Notdienst24.de',
+      'url': SITE,
+      'description': 'Bundesweites Verzeichnis zur Auffindung von behördlich eingeteilten Notdienst-Apotheken in Deutschland.',
+      'publisher': {
+        '@type': 'Organization',
+        'name': 'Apotheke-Notdienst24',
+        'email': 'info@apotheke-notdienst24.de',
+        'url': SITE,
+      }
+    };
 
 const ldBlocks = [
   orgLd,

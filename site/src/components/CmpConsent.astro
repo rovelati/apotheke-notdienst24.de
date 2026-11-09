@@ -2,12 +2,17 @@
 export interface Props {
   pubId?: string;
   gaId?: string;
+  license?: string;
 }
 const {
   pubId = 'ca-pub-2168172914069272',
   gaId = 'G-H0QJ65JZ88',
+  license = 'a63546d830',
 } = Astro.props;
 ---
+<!-- UniConsent CMP (IAB TCF v2.2 & Google Certified CMP) -->
+<script is:inline src="https://cmp.uniconsent.com/v2/cmp.js" data-license={license}></script>
+
 <!-- Google Consent Mode v2 Default Settings (Muss vor allen Google Tags geladen werden) -->
 <script is:inline>
   window.dataLayer = window.dataLayer || [];
@@ -30,7 +35,7 @@ const {
   src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
 ></script>
 
-<!-- Google AdSense & Funding Choices CMP (TCF v2.2 / Consent Mode v2) -->
+<!-- Google AdSense & CMP Integration -->
 <script
   is:inline
   async

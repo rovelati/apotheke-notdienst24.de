@@ -7,12 +7,18 @@ import Base from '../layouts/Base.astro';
   description="Datenschutzerklärung gemäß Datenschutz-Grundverordnung (DSGVO) und Telekommunikation-Digitale-Dienste-Datenschutz-Gesetz (TDDDG) für Apotheke-Notdienst24.de."
   breadcrumbs={[{ name: "Datenschutz", href: "/datenschutz/" }]}
   noindex={true}
+  showEmergencyBanner={false}
 >
   <div class="wrap my-4 legal-container">
     <h1>Datenschutzerklärung</h1>
     <p class="legal-sub">Informationen über die Verarbeitung Ihrer personenbezogenen Daten gemäß DSGVO und TDDDG</p>
 
     <div class="legal-box my-3">
+      <div class="editorial-alert">
+        <strong>Klarstellung zum Status dieser Webseite:</strong><br />
+        Apotheke-Notdienst24.de ist ein rein redaktionelles Online-Informationsportal zur Auffindung des behördlichen Apotheken-Notdienstes. Wir betreiben <strong>keine physische Vor-Ort-Apotheke</strong>, keinen Vor-Ort-Verkauf von Arzneimitteln und unterhalten <strong>keine 24-Stunden-Öffnungszeiten</strong>.
+      </div>
+
       <h2>1. Datenschutz auf einen Blick</h2>
       <p>
         Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst. Personenbezogene Daten sind alle Daten, mit denen Sie persönlich identifiziert werden können. Die nachfolgende Erklärung erläutert, welche Daten wir erheben, wofür wir sie nutzen und welche Rechte Ihnen zustehen.
@@ -24,7 +30,8 @@ import Base from '../layouts/Base.astro';
         <strong>Apotheke-Notdienst24 Informationsportal</strong><br />
         Redaktion & Datenverarbeitung (EU-Herkunftslandprinzip)<br />
         Italien (Europäische Union)<br />
-        E-Mail: <a href="mailto:info@apotheke-notdienst24.de">info@apotheke-notdienst24.de</a>
+        E-Mail: <a href="mailto:info@apotheke-notdienst24.de">info@apotheke-notdienst24.de</a><br />
+        <em>(Hinweis: Es handelt sich um ein reines Online-Portal ohne Vor-Ort-Publikumsverkehr und ohne 24h-Betrieb. Anfragen per E-Mail werden während der üblichen Bürozeiten bearbeitet.)</em>
       </p>
 
       <h2>3. Bereitstellung der Website und Server-Logfiles</h2>
@@ -50,12 +57,20 @@ import Base from '../layouts/Base.astro';
         <strong>Wichtig:</strong> Die Berechnung der Entfernungen zu umliegenden Apotheken findet ausschließlich lokal in Ihrem Webbrowser (Client-seitig mittels JavaScript) statt. Ihre Koordinaten werden zu keinem Zeitpunkt auf unseren Servern gespeichert oder mit einem Nutzerprofil verknüpft. Sie können die Standortfreigabe in den Browsereinstellungen jederzeit widerrufen.
       </p>
 
-      <h2>5. Google Consent Mode v2 & Cookie-Einwilligung (CMP nach § 25 TDDDG)</h2>
+      <h2>5. Google Consent Mode v2 & Cookie-Einwilligung (UniConsent CMP nach § 25 TDDDG)</h2>
       <p>
-        Wir setzen den Google Consent Mode v2 in Verbindung mit einer IAB TCF v2.2 zertifizierten Consent Management Platform (Google Funding Choices) ein.
+        Auf dieser Internetseite setzen wir die nach dem IAB Transparency and Consent Framework (TCF v2.2) und von Google zertifizierte Consent Management Platform (CMP) <strong>UniConsent</strong> (UniConsent Ltd., Lizenz a63546d830) in Verbindung mit dem <strong>Google Consent Mode v2</strong> ein.
       </p>
       <p>
-        Beim ersten Aufruf unserer Seite werden werbe- und analysebezogene Cookies und Skripte standardmäßig blockiert (<code>default: denied</code> gemäß § 25 Abs. 1 TDDDG). Erst wenn Sie im Cookie-Banner aktiv Ihre Zustimmung erteilen, werden Analyse- oder Werbefunktionen aktiviert (Art. 6 Abs. 1 lit. a DSGVO). Sie können Ihre Präferenzen jederzeit über den Link zur Cookie-Einstellung im Footer anpassen.
+        Beim ersten Aufruf unserer Seite werden werbe- und analysebezogene Cookies und Skripte standardmäßig blockiert (<code>default: denied</code> gemäß § 25 Abs. 1 TDDDG). Erst wenn Sie im UniConsent Cookie-Banner aktiv Ihre Zustimmung erteilen, werden Analyse- oder Werbefunktionen aktiviert (Art. 6 Abs. 1 lit. a DSGVO).
+      </p>
+      <p>
+        Sie können Ihre erteilten Einwilligungen jederzeit einsehen, ändern oder mit Wirkung für die Zukunft widerrufen:
+      </p>
+      <p>
+        <button type="button" class="cmp-btn" onclick="if(window.__unicmp){window.__unicmp('showModal');}else if(window.__tcfapi){window.__tcfapi('displayConsentUi',2,function(){});}">
+          ⚙️ Cookie- und Datenschutzeinstellungen anpassen
+        </button>
       </p>
 
       <h2>6. Google Analytics 4 (GA4)</h2>
@@ -140,6 +155,34 @@ import Base from '../layouts/Base.astro';
   }
   .legal-box li {
     margin-bottom: 0.4rem;
+  }
+  .editorial-alert {
+    background: #f8fafc;
+    border-left: 4px solid #64748b;
+    padding: 1rem 1.25rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+  .cmp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .cmp-btn:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
   }
   .legal-box a {
     color: #dc2626;
