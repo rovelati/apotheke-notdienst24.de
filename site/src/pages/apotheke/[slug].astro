@@ -127,13 +127,17 @@ if (pharmacy.googleRating) {
           </a>
         )}
 
+        <a href={`https://www.aponet.de/notdienstsuche/${pharmacy.plz}`} target="_blank" rel="noopener noreferrer nofollow" class="btn btn-aponet btn-lg" title={`Offizielle Notdienstsuche für PLZ ${pharmacy.plz} auf aponet.de`}>
+          <span>Notdienst auf aponet.de (PLZ {pharmacy.plz}) ↗</span>
+        </a>
+
         <a href={kammerPortalUrl} target="_blank" rel="noopener noreferrer nofollow" class="btn btn-kammer btn-lg">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
             <polyline points="15 3 21 3 21 9"></polyline>
             <line x1="10" y1="14" x2="21" y2="3"></line>
           </svg>
-          <span>Offizielles Kammerportal ↗</span>
+          <span>Kammer-Portal ({bundesland.code}) ↗</span>
         </a>
 
         <a href={mapUrl} target="_blank" rel="noopener noreferrer" class="btn btn-route btn-lg">
@@ -294,6 +298,16 @@ if (pharmacy.googleRating) {
     min-width: 220px;
   }
   .btn-call:hover {
+    background: #b91c1c;
+    text-decoration: none;
+  }
+  .btn-aponet {
+    background: #dc2626;
+    color: #ffffff;
+    flex: 1.2;
+    min-width: 220px;
+  }
+  .btn-aponet:hover {
     background: #b91c1c;
     text-decoration: none;
   }

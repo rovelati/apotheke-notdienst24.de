@@ -178,8 +178,36 @@ for (const path in allShards) {
             .sort((a, b) => a.distanceKm - b.distanceKm);
 
           const nearest = withDist.slice(0, 15);
+          const topOne = nearest[0] || {};
+          const aponetTarget = topOne.plz || topOne.ort || `${userLat.toFixed(2)},${userLon.toFixed(2)}`;
 
-          cardsList.innerHTML = nearest.map(p => `
+          const referralBanner = `
+            <div class="official-referral-card" style="background:#fff1f2;border:2px solid #dc2626;border-radius:12px;padding:1.4rem;margin-bottom:1.5rem;">
+              <div style="display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+                <span style="font-size:2rem;">🏛️</span>
+                <div style="flex:1;min-width:240px;">
+                  <h3 style="margin:0 0 4px;color:#991b1b;font-size:1.15rem;font-weight:900;">
+                    Offizieller Notdienstplan für Ihren Standort (${topOne.ort || 'Ihr Umkreis'}, PLZ ${topOne.plz || ''})
+                  </h3>
+                  <p style="margin:0 0 12px;font-size:0.88rem;color:#881337;line-height:1.45;">
+                    Die gesetzliche Notdienstbereitschaft wird nach § 23 ApBetrO tagesaktuell festgelegt. Für eine verbindliche, fehlerfreie Auskunft leiten wir Sie direkt auf das amtliche Auskunftsportal weiter:
+                  </p>
+                  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <a href="https://www.aponet.de/notdienstsuche/${encodeURIComponent(aponetTarget)}" target="_blank" rel="noopener noreferrer nofollow" style="background:#dc2626;color:white;padding:10px 16px;border-radius:6px;font-weight:bold;font-size:0.92rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                      <span>Echtzeit-Notdienst auf aponet.de öffnen ↗</span>
+                    </a>
+                    ${topOne.kammerPortalUrl ? `
+                      <a href="${topOne.kammerPortalUrl}" target="_blank" rel="noopener noreferrer nofollow" style="background:#1e293b;color:white;padding:10px 14px;border-radius:6px;font-weight:bold;font-size:0.88rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                        <span>Landesapothekerkammer-Portal ↗</span>
+                      </a>
+                    ` : ''}
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          cardsList.innerHTML = referralBanner + nearest.map(p => `
             <div class="card pharmacy-card ${p.isOpen24h ? 'is-24h' : ''}" style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;justify-content:space-between;gap:10px;">
               <div>
                 <div style="display:flex;justify-content:space-between;margin-bottom:8px;align-items:center;">

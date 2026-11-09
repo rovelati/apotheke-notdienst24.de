@@ -173,12 +173,19 @@ const faqLd = {
       <div class="official-kammer-banner my-3">
         <div class="banner-icon">🏛️</div>
         <div class="banner-text">
-          <strong>Offizielle Notdienst-Einteilung:</strong> {bundesland.kammerName || 'Landesapothekerkammer'}
-          <p>Dienstzeiten wechseln täglich gem. § 23 ApBetrO. Prüfen Sie die Dienstbereitschaft im offiziellen Kammer-Portal:</p>
+          <strong>Amtlich verifizierte Notdienstsuche für {cityName}:</strong>
+          <p>
+            Um Falschangaben in Notfällen auszuschließen und das Urheber- und Datenbankrecht (§ 87a UrhG) vollumfänglich zu wahren, leiten wir Sie für den tagesaktuellen Dienstplan direkt auf die amtlichen Auskunftssysteme weiter:
+          </p>
+          <div class="referral-buttons-row">
+            <a href={`https://www.aponet.de/notdienstsuche/${encodeURIComponent(cityName)}`} target="_blank" rel="noopener noreferrer nofollow" class="btn-referral-aponet">
+              <span>Echtzeit-Notdienst auf aponet.de für {cityName} ↗</span>
+            </a>
+            <a href={kammerPortalUrl} target="_blank" rel="noopener noreferrer nofollow" class="btn-official-kammer">
+              <span>{bundesland.kammerName || 'Landesapothekerkammer'} ↗</span>
+            </a>
+          </div>
         </div>
-        <a href={kammerPortalUrl} target="_blank" rel="noopener noreferrer nofollow" class="btn-official-kammer">
-          Offizielles Kammerportal ({bundesland.code}) ↗
-        </a>
       </div>
     </div>
 
@@ -356,18 +363,38 @@ const faqLd = {
     font-size: 0.85rem;
     color: var(--muted);
   }
-  .btn-official-kammer {
-    background: #0284c7;
+  .referral-buttons-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .btn-referral-aponet {
+    background: #dc2626;
     color: #ffffff;
-    padding: 8px 14px;
-    border-radius: 4px;
+    padding: 9px 15px;
+    border-radius: 6px;
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  .btn-referral-aponet:hover {
+    background: #b91c1c;
+    text-decoration: none;
+  }
+  .btn-official-kammer {
+    background: #1e293b;
+    color: #ffffff;
+    padding: 9px 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.88rem;
     text-decoration: none;
     transition: background 0.15s ease;
   }
   .btn-official-kammer:hover {
-    background: #0369a1;
+    background: #0f172a;
     text-decoration: none;
   }
   .section-head {
