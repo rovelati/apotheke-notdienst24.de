@@ -67,16 +67,6 @@ if (pharmacy.lat && pharmacy.lon) {
     "longitude": pharmacy.lon
   };
 }
-
-if (pharmacy.googleRating) {
-  pharmacyLd.aggregateRating = {
-    "@type": "AggregateRating",
-    "ratingValue": pharmacy.googleRating,
-    "reviewCount": pharmacy.googleReviewsTotal || 1,
-    "bestRating": "5",
-    "worstRating": "1"
-  };
-}
 ---
 
 <Base
@@ -208,21 +198,6 @@ if (pharmacy.googleRating) {
               </p>
             </div>
           </div>
-
-          <!-- Rating Box -->
-          {pharmacy.googleRating && (
-            <div class="info-box my-3">
-              <h2 class="sub-title">Bewertung</h2>
-              <div class="rating-large">
-                <span class="rating-big-star">★</span>
-                <span class="rating-big-val">{pharmacy.googleRating.toFixed(1)}</span>
-                <span class="rating-big-count">({pharmacy.googleReviewsTotal || 0} Google-Bewertungen)</span>
-              </div>
-              <p class="rating-legal-note">
-                Hinweis gem. § 5b Abs. 3 UWG: Die Bewertungen stammen von Google-Unternehmensprofilen Dritter und werden von uns nicht auf eine tatsächliche Inanspruchnahme der Leistungen überprüft.
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>
@@ -438,31 +413,6 @@ if (pharmacy.googleRating) {
   .fee-notice {
     font-size: 0.82rem;
     color: #9f1239;
-    margin-top: 6px;
-  }
-  .rating-large {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
-  .rating-big-star {
-    font-size: 1.8rem;
-    color: var(--gold);
-  }
-  .rating-big-val {
-    font-size: 1.6rem;
-    font-weight: 800;
-    color: var(--ink);
-  }
-  .rating-big-count {
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-  .rating-legal-note {
-    font-size: 0.78rem;
-    color: var(--muted);
-    line-height: 1.4;
     margin-top: 6px;
   }
 </style>

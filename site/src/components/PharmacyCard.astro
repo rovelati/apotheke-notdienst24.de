@@ -33,7 +33,6 @@ const mapUrl = (pharmacy.lat && pharmacy.lon)
   ? `https://www.google.com/maps/dir/?api=1&destination=${pharmacy.lat},${pharmacy.lon}`
   : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharmacy.name + ' ' + pharmacy.strasse + ' ' + pharmacy.plz + ' ' + pharmacy.ort)}`;
 
-const hasRating = pharmacy.googleRating != null && pharmacy.googleRating > 0;
 const aponetDeepLink = pharmacy.plz ? `https://www.aponet.de/notdienstsuche/${encodeURIComponent(pharmacy.plz)}` : (pharmacy.kammerPortalUrl || 'https://www.aponet.de/apotheke/notdienstsuche');
 ---
 
@@ -57,16 +56,6 @@ const aponetDeepLink = pharmacy.plz ? `https://www.aponet.de/notdienstsuche/${en
           </span>
         )}
       </div>
-
-      {hasRating && (
-        <div class="rating-box" title={`Google-Bewertung: ${pharmacy.googleRating} von 5 (ungeprüft gem. § 5b Abs. 3 UWG)`}>
-          <span class="rating-star">★</span>
-          <span class="rating-val">{pharmacy.googleRating?.toFixed(1)}</span>
-          {pharmacy.googleReviewsTotal && pharmacy.googleReviewsTotal > 0 && (
-            <span class="rating-count">({pharmacy.googleReviewsTotal})</span>
-          )}
-        </div>
-      )}
     </div>
 
     <h3 class="pharma-name">
@@ -193,28 +182,6 @@ const aponetDeepLink = pharmacy.plz ? `https://www.aponet.de/notdienstsuche/${en
     background: var(--surface-2);
     color: var(--ink-secondary);
     border: 1px solid var(--line);
-    font-size: 0.75rem;
-  }
-  .rating-box {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    background: var(--gold-bg);
-    border: 1px solid var(--gold-border);
-    padding: 2px 7px;
-    border-radius: var(--radius-sm);
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: help;
-  }
-  .rating-star {
-    color: var(--gold);
-  }
-  .rating-val {
-    color: var(--ink);
-  }
-  .rating-count {
-    color: var(--muted);
     font-size: 0.75rem;
   }
   .pharma-name {
