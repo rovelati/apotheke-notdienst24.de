@@ -202,44 +202,43 @@ for (const file of shardFiles) {
   const filePath = path.join(SHARDS_DIR, file);
   const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
-  const cleaned = data.map(p => {
-    // Keep true 24h status only if verified permanent 24h
-    const isPermanent24h = Boolean(p.isOpen24h);
-    const bState = kammerMap[p.bundeslandSlug] || {};
+  const cleaned = data
+    .filter(p => !p.id.startsWith('24h-'))
+    .map(p => {
+      const bState = kammerMap[p.bundeslandSlug] || {};
 
-    // Strip fabricated shifts
-    // Strip fabricated fake reviews
-    const hasFakeReviews = Array.isArray(p.googleReviews) && p.googleReviews.some(
-      r => r.author === 'Maximilian Bauer' || r.author === 'Sophie Müller' || r.author === 'Patient'
-    );
+      // Strip fabricated fake reviews
+      const hasFakeReviews = Array.isArray(p.googleReviews) && p.googleReviews.some(
+        r => r.author === 'Maximilian Bauer' || r.author === 'Sophie Müller' || r.author === 'Patient'
+      );
 
-    return {
-      id: p.id,
-      name: p.name,
-      slug: p.slug,
-      strasse: p.strasse,
-      plz: p.plz,
-      ort: p.ort,
-      bundeslandSlug: p.bundeslandSlug,
-      bundeslandCode: p.bundeslandCode,
-      lat: p.lat,
-      lon: p.lon,
-      telephone: p.telephone || '',
-      isOpen24h: isPermanent24h,
-      isNotdienstStaerker: isPermanent24h,
-      googleRating: p.googleRating || null,
-      googleReviewsTotal: p.googleReviewsTotal || 0,
-      googleReviews: hasFakeReviews ? [] : (p.googleReviews || []),
-      editorialSummary: `${p.name} in ${p.ort} (${p.plz}): Kontaktdaten, Adresse und Hinweise zur Notdienst-Bereitschaft.`,
-      openingHours: p.openingHours || ["Mo-Fr: 08:30 - 18:30 Uhr", "Sa: 09:00 - 13:00 Uhr"],
-      googleWebsite: p.googleWebsite || '',
-      source: p.source || 'Öffentliches Apothekenverzeichnis',
-      sourceType: p.sourceType || 'public_register',
-      kammerName: bState.kammerName || '',
-      kammerPortalUrl: bState.verifiedPortalUrl || 'https://www.aponet.de/apotheke/notdienstsuche',
-      lastUpdated: new Date().toISOString().split('T')[0]
-    };
-  });
+      return {
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        strasse: p.strasse,
+        plz: p.plz,
+        ort: p.ort,
+        bundeslandSlug: p.bundeslandSlug,
+        bundeslandCode: p.bundeslandCode,
+        lat: p.lat,
+        lon: p.lon,
+        telephone: p.telephone || '',
+        isOpen24h: false,
+        isNotdienstStaerker: false,
+        googleRating: p.googleRating || null,
+        googleReviewsTotal: p.googleReviewsTotal || 0,
+        googleReviews: hasFakeReviews ? [] : (p.googleReviews || []),
+        editorialSummary: `${p.name} in ${p.ort} (${p.plz}): Kontaktdaten, Adresse und Hinweise zur Notdienst-Bereitschaft.`,
+        openingHours: p.openingHours || ["Mo-Fr: 08:30 - 18:30 Uhr", "Sa: 09:00 - 13:00 Uhr"],
+        googleWebsite: p.googleWebsite || '',
+        source: p.source || 'Öffentliches Apothekenverzeichnis',
+        sourceType: p.sourceType || 'public_register',
+        kammerName: bState.kammerName || '',
+        kammerPortalUrl: bState.verifiedPortalUrl || 'https://www.aponet.de/apotheke/notdienstsuche',
+        lastUpdated: new Date().toISOString().split('T')[0]
+      };
+    });
 
   fs.writeFileSync(filePath, JSON.stringify(cleaned), 'utf8');
   totalCleaned += cleaned.length;

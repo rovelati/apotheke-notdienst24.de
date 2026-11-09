@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base
+  title="Seite nicht gefunden (404) | Apotheke-Notdienst24.de"
+  description="Die angeforderte Seite konnte leider nicht gefunden werden. Nutzen Sie unsere Suche, um Notdienst-Apotheken in Ihrer Nähe zu finden."
+  noindex={true}
+  showEmergencyBanner={false}
+>
+  <div class="wrap text-center my-4 py-4">
+    <h1 style="font-size: 3rem; font-weight: 900; color: #dc2626; margin-bottom: 0.5rem;">404</h1>
+    <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">Seite nicht gefunden</h2>
+    <p style="color: var(--muted); max-width: 500px; margin: 0 auto 2rem;">
+      Dieser Eintrag existiert nicht mehr oder die Adresse wurde geändert. Bitte nutzen Sie unsere Suche oder wählen Sie Ihr Bundesland aus.
+    </p>
+    <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+      <a href="/" class="btn btn-primary">Zur Startseite</a>
+      <a href="/in-meiner-naehe/" class="btn btn-outline">Notdienst in meiner Nähe</a>
+      <a href="/apotheken-notdienst/" class="btn btn-outline">Alle Bundesländer</a>
+    </div>
+  </div>
+</Base>
