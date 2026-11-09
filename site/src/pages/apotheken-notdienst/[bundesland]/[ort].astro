@@ -100,8 +100,6 @@ expandedPharmacies.sort((a, b) => {
   return (a.distanceKm || 0) - (b.distanceKm || 0);
 });
 
-// 24h permanent pharmacies in this area
-const permanent24h = expandedPharmacies.filter(p => p.isOpen24h);
 const kammerPortalUrl = bundesland.verifiedPortalUrl || 'https://www.aponet.de/apotheke/notdienstsuche';
 
 const faqs = [
@@ -197,24 +195,6 @@ const faqLd = {
     <div class="my-3">
       <AdSlot slot="7890123456" />
     </div>
-
-    {permanent24h.length > 0 && (
-      <!-- Permanent 24h Pharmacies -->
-      <section class="my-4">
-        <div class="section-head">
-          <div>
-            <h2 class="section-title">🟢 Ständige 24h-Apotheken in {cityName} & Umgebung ({permanent24h.length})</h2>
-            <p class="section-sub">Diese Apotheken bieten durchgehenden Notdienst an 365 Tagen im Jahr.</p>
-          </div>
-        </div>
-
-        <div class="cards-grid">
-          {permanent24h.map(p => (
-            <PharmacyCard pharmacy={p} />
-          ))}
-        </div>
-      </section>
-    )}
 
     <!-- Map Section -->
     <section class="my-4">

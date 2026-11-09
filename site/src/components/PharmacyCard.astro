@@ -27,8 +27,6 @@ export interface Props {
 
 const { pharmacy, showDetailLink = true } = Astro.props;
 
-const is24h = Boolean(pharmacy.isOpen24h);
-
 const mapUrl = (pharmacy.lat && pharmacy.lon)
   ? `https://www.google.com/maps/dir/?api=1&destination=${pharmacy.lat},${pharmacy.lon}`
   : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharmacy.name + ' ' + pharmacy.strasse + ' ' + pharmacy.plz + ' ' + pharmacy.ort)}`;
@@ -36,19 +34,13 @@ const mapUrl = (pharmacy.lat && pharmacy.lon)
 const aponetDeepLink = pharmacy.plz ? `https://www.aponet.de/notdienstsuche/${encodeURIComponent(pharmacy.plz)}` : (pharmacy.kammerPortalUrl || 'https://www.aponet.de/apotheke/notdienstsuche');
 ---
 
-<div class={`card pharmacy-card ${is24h ? 'is-24h' : ''}`}>
+<div class="card pharmacy-card">
   <div class="card-header">
     <div class="status-row">
       <div class="status-left">
-        {is24h ? (
-          <span class="badge badge-24h">
-            <span class="pulse-dot"></span> 24h Dauerhaft Geöffnet
-          </span>
-        ) : (
-          <span class="badge badge-normal">
-            Apotheke
-          </span>
-        )}
+        <span class="badge badge-normal">
+          Apotheke
+        </span>
 
         {pharmacy.distanceKm !== undefined && (
           <span class="badge badge-distance">
@@ -76,15 +68,9 @@ const aponetDeepLink = pharmacy.plz ? `https://www.aponet.de/notdienstsuche/${en
   </div>
 
   <div class="notdienst-info-box">
-    {is24h ? (
-      <div class="info-24h-text">
-        <span>🕒</span> <strong>Durchgehend geöffnet:</strong> Ständige 24h-Bereitschaft (365 Tage im Jahr).
-      </div>
-    ) : (
-      <div class="info-kammer-text">
-        <span>ℹ️</span> <strong>Notdienst-Auskunft:</strong> Gesetzlicher Notdienst wechselt täglich. Bitte vorab anrufen oder beim offiziellen Portal der Landesapothekerkammer prüfen.
-      </div>
-    )}
+    <div class="info-kammer-text">
+      <span>ℹ️</span> <strong>Notdienst-Auskunft:</strong> Gesetzlicher Notdienst wechselt täglich. Bitte vorab anrufen oder beim offiziellen Portal der Landesapothekerkammer prüfen.
+    </div>
   </div>
 
   <div class="card-actions">
@@ -140,10 +126,6 @@ const aponetDeepLink = pharmacy.plz ? `https://www.aponet.de/notdienstsuche/${en
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
   }
-  .pharmacy-card.is-24h {
-    border-color: #10b981;
-    background: color-mix(in srgb, var(--surface) 97%, #10b981);
-  }
   .status-row {
     display: flex;
     align-items: center;
@@ -168,10 +150,6 @@ const aponetDeepLink = pharmacy.plz ? `https://www.aponet.de/notdienstsuche/${en
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-  }
-  .badge-24h {
-    background: #059669;
-    color: #ffffff;
   }
   .badge-normal {
     background: var(--surface-2);
@@ -220,9 +198,6 @@ const aponetDeepLink = pharmacy.plz ? `https://www.aponet.de/notdienstsuche/${en
     font-size: 0.82rem;
     line-height: 1.45;
     color: var(--ink-secondary);
-  }
-  .info-24h-text {
-    color: #065f46;
   }
   .card-actions {
     display: flex;

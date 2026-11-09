@@ -208,11 +208,11 @@ for (const path in allShards) {
           `;
 
           cardsList.innerHTML = referralBanner + nearest.map(p => `
-            <div class="card pharmacy-card ${p.isOpen24h ? 'is-24h' : ''}" style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;justify-content:space-between;gap:10px;">
+            <div class="card pharmacy-card" style="background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1.25rem;display:flex;flex-direction:column;justify-content:space-between;gap:10px;">
               <div>
                 <div style="display:flex;justify-content:space-between;margin-bottom:8px;align-items:center;">
-                  <span style="background:${p.isOpen24h ? '#059669' : '#1e293b'};color:white;padding:3px 8px;border-radius:99px;font-size:11px;font-weight:bold;">
-                    ${p.isOpen24h ? '24h Dauerhaft Geöffnet' : 'Apotheke'}
+                  <span style="background:var(--surface-2);color:var(--muted);border:1px solid var(--line);padding:3px 8px;border-radius:99px;font-size:11px;font-weight:bold;">
+                    Apotheke
                   </span>
                   <span style="font-size:12px;font-weight:bold;color:var(--ink-secondary);background:var(--surface-2);padding:3px 8px;border-radius:99px;">
                     📍 ${p.distanceKm.toFixed(1)} km entfernt

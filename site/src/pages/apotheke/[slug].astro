@@ -29,8 +29,6 @@ export async function getStaticPaths() {
 
 const { pharmacy, bundesland } = Astro.props;
 
-const is24h = Boolean(pharmacy.isOpen24h);
-
 const mapUrl = (pharmacy.lat && pharmacy.lon)
   ? `https://www.google.com/maps/dir/?api=1&destination=${pharmacy.lat},${pharmacy.lon}`
   : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(pharmacy.name + ' ' + pharmacy.strasse + ' ' + pharmacy.plz + ' ' + pharmacy.ort)}`;
@@ -86,15 +84,9 @@ if (pharmacy.lat && pharmacy.lon) {
     <div class="pharma-profile-card">
       <div class="profile-header">
         <div class="status-badge-wrap">
-          {is24h ? (
-            <span class="badge badge-24h">
-              <span class="pulse-dot"></span> 24h Dauerhaft Geöffnet
-            </span>
-          ) : (
-            <span class="badge badge-normal">
-              Reguläre Apotheke
-            </span>
-          )}
+          <span class="badge badge-normal">
+            Apotheke
+          </span>
         </div>
 
         <h1 class="pharma-title">{pharmacy.name}</h1>
@@ -169,24 +161,17 @@ if (pharmacy.lat && pharmacy.lon) {
         <div class="profile-col">
           <h2 class="sub-title">Apotheken-Notdienst & Bereitschaft</h2>
           <div class="info-box notdienst-box">
-            {is24h ? (
-              <div class="active-alert-24h">
-                <strong>🕒 24-Stunden-Apotheke</strong>
-                <p>Diese Apotheke bietet eine ständige 24h-Versorgung an 365 Tagen im Jahr (z. B. an großen Hauptbahnhöfen oder Flughäfen).</p>
+            <div class="kammer-card">
+              <div class="kammer-badge">🏛️ {bundesland.kammerName || 'Zuständige Landesapothekerkammer'}</div>
+              <p class="kammer-text">
+                Der Notdienst in <strong>{pharmacy.ort}</strong> und ganz {bundesland.name} wird gemäß § 23 Apothekenbetriebsordnung (ApBetrO) tagesaktuell durch die Landesapothekerkammer geregelt.
+              </p>
+              <div class="kammer-action-wrap">
+                <a href={kammerPortalUrl} target="_blank" rel="noopener noreferrer nofollow" class="btn-kammer-portal">
+                  <span>Zur verbindlichen Notdienst-Suche der Kammer ↗</span>
+                </a>
               </div>
-            ) : (
-              <div class="kammer-card">
-                <div class="kammer-badge">🏛️ {bundesland.kammerName || 'Zuständige Landesapothekerkammer'}</div>
-                <p class="kammer-text">
-                  Der Notdienst in <strong>{pharmacy.ort}</strong> und ganz {bundesland.name} wird gemäß § 23 Apothekenbetriebsordnung (ApBetrO) tagesaktuell durch die Landesapothekerkammer geregelt.
-                </p>
-                <div class="kammer-action-wrap">
-                  <a href={kammerPortalUrl} target="_blank" rel="noopener noreferrer nofollow" class="btn-kammer-portal">
-                    <span>Zur verbindlichen Notdienst-Suche der Kammer ↗</span>
-                  </a>
-                </div>
-              </div>
-            )}
+            </div>
 
             <div class="alert-safety my-3">
               <strong>⚠️ Wichtiger Hinweis für Patienten:</strong>
@@ -349,16 +334,6 @@ if (pharmacy.lat && pharmacy.lon) {
     gap: 6px;
     font-size: 0.92rem;
     color: var(--ink-secondary);
-  }
-  .active-alert-24h {
-    background: #ecfdf5;
-    border: 1px solid #a7f3d0;
-    color: #065f46;
-    padding: 12px 14px;
-    border-radius: var(--radius-sm);
-    margin-bottom: 1rem;
-    font-size: 0.95rem;
-    line-height: 1.5;
   }
   .kammer-card {
     background: #ffffff;

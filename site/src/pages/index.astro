@@ -19,11 +19,8 @@ for (const path in allShards) {
   }
 }
 
-// Featured pharmacies: permanent 24h pharmacies first, then central pharmacies
-const featuredPharmacies = allPharmacies
-  .filter(p => p.isOpen24h)
-  .concat(allPharmacies.filter(p => !p.isOpen24h))
-  .slice(0, 12);
+// Featured pharmacies: selection of central pharmacies
+const featuredPharmacies = allPharmacies.slice(0, 12);
 
 // Major cities for quick links
 const topCities = [
@@ -121,7 +118,7 @@ const faqLd = {
     <div class="section-head">
       <div>
         <h2 class="section-title">Deutschlandkarte: Notdienst-Apotheken im Überblick</h2>
-        <p class="section-sub">Interaktive Karte der dienstbereiten Notdienst- und 24h-Apotheken in den Metropolregionen.</p>
+        <p class="section-sub">Interaktive Karte der Apotheken in den Metropolregionen. Vor Anfahrt Notdienstbereitschaft telefonisch prüfen.</p>
       </div>
     </div>
     <PharmacyMap pharmacies={allPharmacies} zoom={6} />
@@ -154,8 +151,8 @@ const faqLd = {
   <section class="wrap my-4">
     <div class="section-head">
       <div>
-        <h2 class="section-title">Ausgewählte Notdienst- & 24h-Apotheken</h2>
-        <p class="section-sub">Ständige 24-Stunden-Apotheken und zentrale Notdienst-Anlaufstellen. Bitte vorab anrufen!</p>
+        <h2 class="section-title">Wichtige Apotheken in Deutschland</h2>
+        <p class="section-sub">Zentrale Anlaufstellen der Metropolen. Vor Anfahrt bitte immer telefonisch rückbestätigen!</p>
       </div>
     </div>
 

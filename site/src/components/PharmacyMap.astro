@@ -31,8 +31,6 @@ const {
 const validPharmacies = pharmacies.filter(p => p.lat && p.lon && !isNaN(p.lat) && !isNaN(p.lon));
 
 const mappedData = validPharmacies.map(p => {
-  const is24h = Boolean(p.isOpen24h);
-
   return {
     id: p.id || p.slug || Math.random().toString(),
     name: p.name,
@@ -43,12 +41,9 @@ const mappedData = validPharmacies.map(p => {
     lat: p.lat,
     lon: p.lon,
     tel: p.telephone,
-    is24h,
     kammerUrl: p.kammerPortalUrl || 'https://www.aponet.de/apotheke/notdienstsuche'
   };
 });
-
-const count24h = mappedData.filter(p => p.is24h).length;
 ---
 
 <div class="map-container-box">
@@ -58,11 +53,6 @@ const count24h = mappedData.filter(p => p.is24h).length;
         <span class="toggle-indicator"></span>
         <span class="toggle-text">Alle Apotheken ({mappedData.length})</span>
       </button>
-      {count24h > 0 && (
-        <button type="button" id="toggle-filter-24h" class="map-toggle-btn" data-filter="24h">
-          <span>🟢 Ständige 24h-Apotheken ({count24h})</span>
-        </button>
-      )}
     </div>
 
     <div class="map-actions-group">
@@ -83,12 +73,6 @@ const count24h = mappedData.filter(p => p.is24h).length;
   <div id="pharmacy-map" class="interactive-map"></div>
 
   <div class="map-legend">
-    {count24h > 0 && (
-      <div class="legend-item">
-        <span class="legend-dot dot-green"></span>
-        <span>Ständige 24h-Apotheke</span>
-      </div>
-    )}
     <div class="legend-item">
       <span class="legend-dot dot-blue"></span>
       <span>Apotheke (Notdienst wechselnd)</span>
@@ -200,7 +184,6 @@ const count24h = mappedData.filter(p => p.is24h).length;
     height: 10px;
     border-radius: 50%;
   }
-  .dot-green { background: #059669; }
   .dot-blue { background: #0284c7; }
   .dot-cluster { background: #d97706; }
 
@@ -229,15 +212,7 @@ const count24h = mappedData.filter(p => p.is24h).length;
         maxZoom: 19
       }).addTo(map);
 
-      // Custom SVG icons
-      const greenIcon = L.divIcon({
-        className: 'custom-pin-green',
-        html: '<div style="background:#059669;color:white;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:16px;box-shadow:0 2px 6px rgba(0,0,0,0.3);border:2px solid white;">24h</div>',
-        iconSize: [30, 30],
-        iconAnchor: [15, 15],
-        popupAnchor: [0, -15]
-      });
-
+      // Custom SVG icon
       const blueIcon = L.divIcon({
         className: 'custom-pin-blue',
         html: '<div style="background:#0284c7;color:white;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px;box-shadow:0 2px 5px rgba(0,0,0,0.25);border:2px solid white;">A</div>',
@@ -253,23 +228,20 @@ const count24h = mappedData.filter(p => p.is24h).length;
       });
       map.addLayer(clusterGroup);
 
-      let currentFilter = 'all';
-
       function renderMarkers() {
         clusterGroup.clearLayers();
-        const toShow = currentFilter === '24h' ? mappedData.filter(p => p.is24h) : mappedData;
         const bounds = [];
 
-        toShow.forEach(p => {
+        mappedData.forEach(p => {
           if (!p.lat || !p.lon) return;
           const marker = L.marker([p.lat, p.lon], {
-            icon: p.is24h ? greenIcon : blueIcon
+            icon: blueIcon
           });
 
           const popupContent = `
             <div style="font-family:system-ui,sans-serif;padding:4px;min-width:210px;">
-              <div style="display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:bold;color:white;background:${p.is24h ? '#059669' : '#0284c7'};margin-bottom:6px;">
-                ${p.is24h ? '24h Dauernd Geöffnet' : 'Apotheke'}
+              <div style="display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:bold;color:white;background:#0284c7;margin-bottom:6px;">
+                Apotheke
               </div>
               <h4 style="margin:0 0 4px;font-size:14px;font-weight:bold;">${p.name}</h4>
               <p style="margin:0 0 8px;font-size:12px;color:#555;">${p.strasse}, ${p.plz} ${p.ort}</p>
@@ -293,28 +265,6 @@ const count24h = mappedData.filter(p => p.is24h).length;
       }
 
       renderMarkers();
-
-      // Filter buttons
-      const btnAll = document.getElementById('toggle-filter-all');
-      const btn24h = document.getElementById('toggle-filter-24h');
-
-      if (btnAll) {
-        btnAll.addEventListener('click', () => {
-          currentFilter = 'all';
-          btnAll.classList.add('active');
-          if (btn24h) btn24h.classList.remove('active');
-          renderMarkers();
-        });
-      }
-
-      if (btn24h) {
-        btn24h.addEventListener('click', () => {
-          currentFilter = '24h';
-          btn24h.classList.add('active');
-          if (btnAll) btnAll.classList.remove('active');
-          renderMarkers();
-        });
-      }
 
       // Geolocation
       const btnLocate = document.getElementById('btn-map-locate');
