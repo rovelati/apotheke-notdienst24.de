@@ -1,0 +1,694 @@
+---
+import Base from '../layouts/Base.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+const guideLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Apotheken-Notdienst in Deutschland: Ablauf, Notdienstgebühr, Noctu & EU-Rezepte",
+    "description": "Umfassender Ratgeber zum Apotheken-Notdienst in Deutschland: Rechtliche Grundlagen (§ 23 ApBetrO), Notdienstgebühr von 2,50 € (§ 6 AMPreisV), Noctu-Befreiung, Nachtschalter und Gültigkeit italienischer & ausländischer EU-Rezepte.",
+    "author": {
+      "@type": "Person",
+      "name": "Romolo Velati"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Apotheke-Notdienst24.de",
+      "url": "https://www.apotheke-notdienst24.de"
+    },
+    "datePublished": "2026-11-09",
+    "dateModified": "2026-11-09"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Wie hoch ist die Notdienstgebühr in der Apotheke?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Gemäß § 6 der Arzneimittelpreisverordnung (AMPreisV) beträgt die gesetzliche Notdienstgebühr pauschal 2,50 Euro pro Notdienst-Besuch (inklusive Mehrwertsteuer). Sie fällt nur einmal pro Inanspruchnahme an – unabhängig von der Anzahl der gekauften Medikamente."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Wann muss die Notdienstgebühr von 2,50 € bezahlt werden?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Die Notdienstgebühr fällt außerhalb der regulären Ladenöffnungszeiten an: an Werktagen montags bis samstags von 20:00 Uhr abends bis 06:00 Uhr morgens sowie an Sonn- und Feiertagen ganztägig (von 00:00 bis 24:00 Uhr)."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Was bedeutet das Kreuzchen 'noctu' auf dem Rezept?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "'Noctu' ist lateinisch für 'nachts'. Hat der Arzt das Feld 'noctu' auf dem Kassenrezept oder E-Rezept angekreuzt, gilt die Verordnung als akuter Notfall. In diesem Fall übernimmt die Gesetzliche Krankenversicherung (GKV) die Notdienstgebühr von 2,50 Euro vollständig."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Darf man im Apotheken-Notdienst Kosmetik oder normale Drogerieartikel kaufen?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Nein. Gemäß Apothekenbetriebsordnung (§ 23 ApBetrO) dient der Notdienst ausschließlich der Versorgung mit dringend benötigten Arzneimitteln und Notfallmitteln (z.B. Säuglingsnahrung, Schmerzmittel, Wundversorgung). Der Erwerb von Kosmetika oder sekundären Artikeln ist unzulässig."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Kann ich ein italienisches oder ausländisches EU-Rezept in einer deutschen Apotheke einlösen?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ja. Gemäß der EU-Patientenrechte-Richtlinie 2011/24/EU und § 2 Abs. 1a AMVV sind Papierrezepte aus EU-Ländern (wie Italien) in deutschen Apotheken gültig, sofern sie den Patientennamen, Geburtsdatum, Arztangaben sowie den internationalen Freinamen des Wirkstoffs (INN) enthalten. Die Abrechnung erfolgt vor Ort als Privatrezept gegen Beleg zur späteren Erstattung bei der heimatlichen Krankenkasse."
+        }
+      }
+    ]
+  }
+];
+---
+
+<Base
+  title="Apotheken-Notdienst Ratgeber: Gebühren, Nachtschalter, Noctu & EU-Rezepte | Apotheke-Notdienst24.de"
+  description="Wie funktioniert der Apotheken-Notdienst in Deutschland? Gesetzliche Grundlagen (§ 23 ApBetrO), Notdienstgebühr von 2,50 € (§ 6 AMPreisV), Noctu-Befreiung, Nachtschalter und Einlösen von EU-Rezepten."
+  breadcrumbs={[{ name: "Notdienst-Ratgeber", href: "/notdienst-ratgeber/" }]}
+  jsonLd={guideLd}
+>
+  <div class="wrap my-4 guide-container">
+    <div class="guide-header">
+      <span class="guide-kicker">Rechtlicher & Praktischer Leitfaden</span>
+      <h1 class="guide-title">Apotheken-Notdienst in Deutschland: Ablauf, Gebühren & Vorschriften</h1>
+      <p class="guide-lead">
+        In Deutschland ist die Arzneimittelversorgung rund um die Uhr gesetzlich garantiert. Erfahren Sie hier alle rechtlichen Grundlagen gemäß <strong>Apothekenbetriebsordnung (ApBetrO)</strong>, wie der <strong>Nachtschalter</strong> funktioniert, wann die <strong>Notdienstgebühr von 2,50 €</strong> anfällt, was das Vermerk <strong>„noctu“</strong> bewirkt und wie <strong>ausländische EU-Rezepte</strong> behandelt werden.
+      </p>
+    </div>
+
+    <!-- Quick Key Facts Bar -->
+    <div class="facts-grid my-3">
+      <div class="fact-card">
+        <span class="fact-num">24h</span>
+        <span class="fact-label">Durchgehender Dienst (08:30 bis 08:30 Uhr Folgetag)</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-num">2,50 €</span>
+        <span class="fact-label">Gesetzliche Notdienstgebühr (§ 6 AMPreisV)</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-num">~900</span>
+        <span class="fact-label">Notdienst-Apotheken pro Nacht in Deutschland</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-num">noctu</span>
+        <span class="fact-label">Kassenübernahme bei ärztlicher Dringlichkeit</span>
+      </div>
+    </div>
+
+    <!-- In-Content Ad -->
+    <div class="my-3">
+      <AdSlot slot="4567890123" />
+    </div>
+
+    <!-- Table of Contents -->
+    <div class="toc-box my-3">
+      <h2>Inhaltsübersicht dieses Ratgebers</h2>
+      <ol class="toc-list">
+        <li><a href="#was-ist-der-notdienst">1. Was ist der Apotheken-Notdienst (Nacht- und Notdienst)?</a></li>
+        <li><a href="#ablauf-und-nachtschalter">2. Wie funktioniert der Dienst? Turnus, Notdienstklingel & Nachtschalter</a></li>
+        <li><a href="#erlaubte-produkte">3. Was darf man im Notdienst kaufen – und was nicht?</a></li>
+        <li><a href="#notdienstgebuehr-und-noctu">4. Die Notdienstgebühr von 2,50 € & die Bedeutung von „noctu“</a></li>
+        <li><a href="#zahlen-und-dichte">5. Zahlen & Fakten: Wie viele Notapotheken haben nachts geöffnet?</a></li>
+        <li><a href="#offizielle-wege">6. Wie finde ich die Notdienstapotheke in Echtzeit?</a></li>
+        <li><a href="#eu-rezepte">7. Sonderfall: Gültigkeit italienischer & ausländischer EU-Rezepte</a></li>
+      </ol>
+    </div>
+
+    <!-- Section 1 -->
+    <article class="guide-article">
+      <section id="was-ist-der-notdienst" class="guide-section">
+        <h2>1. Was ist der Apotheken-Notdienst (Nacht- und Notdienst)?</h2>
+        <p>
+          In Deutschland nimmt der Apotheken-Notdienst (auch als <em>Nacht- und Notdienst</em> bezeichnet) einen zentralen Platz in der Notfall-Gesundheitsversorgung ein. Er stellt sicher, dass Bürgerinnen und Bürger an <strong>365 Tagen im Jahr, 24 Stunden am Tag</strong> – einschließlich Sonn- und gesetzlicher Feiertage sowie mitten in der Nacht – Zugang zu lebensnotwendigen und akut benötigten Arzneimitteln haben.
+        </p>
+        <p>
+          Die gesetzliche Pflicht zur Notdienstbereitschaft ist in <strong>§ 23 der Apothekenbetriebsordnung (ApBetrO)</strong> bundesweit verbindlich verankert:
+        </p>
+        <blockquote class="legal-quote">
+          „Die Apotheken sind zur ständigen Dienstbereitschaft verpflichtet. Zur Sicherstellung der Versorgung der Bevölkerung mit Arzneimitteln [...] kann die zuständige Behörde bzw. Landesapothekerkammer anordnen, dass die Apotheken abwechselnd geschlossen sein müssen.“
+          <cite>— § 23 Abs. 1 und 2 ApBetrO</cite>
+        </blockquote>
+      </section>
+
+      <!-- Section 2 -->
+      <section id="ablauf-und-nachtschalter" class="guide-section">
+        <h2>2. Wie funktioniert der Dienst? Turnus, Notdienstklingel & Nachtschalter</h2>
+        <h3>Der 24-Stunden-Turnus</h3>
+        <p>
+          Eine Notdienstschicht dauert in der Regel genau <strong>24 Stunden am Stück</strong>: Sie beginnt morgens um 08:30 Uhr (bzw. in manchen Regionen um 09:00 Uhr) und endet exakt am darauffolgenden Morgen zur gleichen Zeit, wenn die nächste eingeteilte Apotheke den Staffelstab übernimmt. Die Notdienstpläne werden durch die jeweils zuständige <strong>Landesapothekerkammer</strong> des Bundeslandes im Voraus nach strengen regionalen Zuweisungsschlüsseln festgesetzt.
+        </p>
+
+        <h3>Zugang über die Notdienstklingel (Notdienstklappe)</h3>
+        <p>
+          Außerhalb der regulären Ladenöffnungszeiten (insbesondere zwischen 20:00 Uhr abends und 08:30 Uhr morgens) bleibt der normale Verkaufsraum der Apotheke aus Sicherheitsgründen verschlossen.
+        </p>
+        <div class="info-callout">
+          <h4>💡 So läuft der Nachtbesuch ab:</h4>
+          <ul>
+            <li><strong>Notdienstklingel betätigen:</strong> An der Eingangstür oder im Schaufenster befindet sich eine gut markierte Klingel mit Gegensprechanlage.</li>
+            <li><strong>Der Apotheker meldet sich:</strong> Der diensthabende Apotheker oder die Apothekerin übernachtet direkt in der Apotheke (im Bereitschaftszimmer) oder in unmittelbarer Rufnähe und meldet sich über die Sprechanlage.</li>
+            <li><strong>Bedienung an der Notdienstklappe:</strong> Die Beratung und Warenausgabe erfolgt durch ein Sicherheitsfenster mit Durchreiche bzw. Drehschleuse (auch <em>Nachtschalter</em> oder <em>Notdienstklappe</em> genannt).</li>
+            <li><strong>Bezahlung:</strong> Die Bezahlung erfolgt in bar oder – an den meisten Notdienstschaltern – bequem per Girocard/Kreditkarte.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Section 3 -->
+      <section id="erlaubte-produkte" class="guide-section">
+        <h2>3. Was darf man im Notdienst kaufen – und was nicht?</h2>
+        <p>
+          Der Apotheken-Notdienst ist ein <strong>medizinischer Bereitschaftsdienst für Akutfälle</strong> und kein herkömmlicher Spätkaufladen. 
+        </p>
+        <div class="allowed-grid">
+          <div class="allowed-box yes">
+            <h3>✅ Im Notdienst gestattet:</h3>
+            <ul>
+              <li>Ärztlich verordnete Rezepte (Notfallverschreibungen, Antibiotika, Schmerzmittel)</li>
+              <li>Rezeptfreie Arzneimittel bei akuten Beschwerden (z.B. hohes Fieber, Magen-Darm-Krämpfe, Zahn- oder Ohrenschmerzen)</li>
+              <li>Akute Säuglings- und Kindernotfallprodukte (Fieberzäpfchen, Spezialnahrung bei Unverträglichkeit)</li>
+              <li>Akuter Verbandsstoff- und Wundversorgungsbedarf (Verbände, sterile Kompressen, Desinfektionsmittel)</li>
+              <li>Notfall-Verhütungsmittel („Pille danach“) nach entsprechender Beratung</li>
+            </ul>
+          </div>
+          <div class="allowed-box no">
+            <h3>❌ Im Notdienst unzulässig:</h3>
+            <ul>
+              <li>Kosmetika, Parfümerie und Anti-Aging-Produkte</li>
+              <li>Wellnessartikel, Teesortimente und Geschenkartikel</li>
+              <li>Geplante Vorratskäufe nicht-dringlicher Nahrungsergänzungsmittel</li>
+              <li>Routinebesorgungen, die während der regulären Öffnungszeiten erledigt werden können</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4 -->
+      <section id="notdienstgebuehr-und-noctu" class="guide-section">
+        <h2>4. Die Notdienstgebühr von 2,50 € & die Bedeutung von „noctu“</h2>
+        <h3>Höhe und Rechtsgrundlage (§ 6 AMPreisV)</h3>
+        <p>
+          Für jede Inanspruchnahme der Apotheke während des Notdienstes wird eine gesetzlich festgelegte Notdienstgebühr in Höhe von <strong>2,50 Euro (inkl. gesetzlicher Mehrwertsteuer)</strong> fällig. Geregelt ist dies in <strong>§ 6 der Arzneimittelpreisverordnung (AMPreisV)</strong>.
+        </p>
+        <p>
+          <strong>Wichtig:</strong> Die Gebühr fällt <strong>einmal pro Besuch</strong> an – unabhängig davon, wie viele Medikamente auf dem Rezept stehen oder wie viele Packungen Sie erwerben.
+        </p>
+
+        <h3>Wann wird die Notdienstgebühr erhoben?</h3>
+        <ul>
+          <li><strong>Werktags (Montag bis Samstag):</strong> In der Zeit von <strong>20:00 Uhr abends bis 06:00 Uhr morgens</strong>.</li>
+          <li><strong>Sonn- und gesetzliche Feiertage:</strong> <strong>Ganztägig (von 00:00 bis 24:00 Uhr)</strong>.</li>
+          <li><strong>Heiligabend (24. Dezember):</strong> Vor 06:00 Uhr morgens und nach 14:00 Uhr nachmittags, sofern der 24. Dezember auf einen Werktag fällt.</li>
+          <li><strong>Während der regulären Tagesöffnungszeiten:</strong> Hat eine Apotheke werktags tagsüber (z.B. samstags zwischen 08:30 und 20:00 Uhr) Notdienst, fällt die Gebühr in der Regel <em>nicht</em> an.</li>
+        </ul>
+
+        <h3>Die Bedeutung von „noctu“ auf dem Rezept</h3>
+        <p>
+          Auf dem bundesweiten Kassenrezept (Muster 16) sowie im digitalen <strong>E-Rezept</strong> befindet sich ein kleines Ankreuzfeld mit der Aufschrift <strong>„noctu“</strong> (lateinisch für „bei Nacht“):
+        </p>
+        <div class="noctu-card">
+          <div class="noctu-badge">noctu</div>
+          <div class="noctu-desc">
+            <strong>Kassenübernahme bei ärztlich bescheinigter Dringlichkeit:</strong><br />
+            Wenn der Arzt oder der ärztliche Bereitschaftsdienst (116 117) dieses Kreuzchen setzt, bestätigt er, dass das Medikament <em>sofort und unaufschiebbar</em> noch in der Nacht benötigt wird. 
+            In diesem Fall übernimmt die <strong>gesetzliche Krankenkasse (GKV)</strong> die Notdienstgebühr von 2,50 Euro vollständig. Der Patient zahlt lediglich die normale gesetzliche Zuzahlung.
+          </div>
+        </div>
+        <p class="mt-2 text-muted">
+          <em>Hinweis für Selbstzahler und Privatrezepte:</em> Bei Privatrezepten oder freiverkäuflichen Medikamenten ohne Notfall-Rezept muss die Gebühr von 2,50 € zunächst vom Patienten selbst an der Notdienstklappe entrichtet werden.
+        </p>
+      </section>
+
+      <!-- Section 5 -->
+      <section id="zahlen-und-dichte" class="guide-section">
+        <h2>5. Zahlen & Fakten: Wie viele Notapotheken haben nachts geöffnet?</h2>
+        <p>
+          Das System des deutschen Apotheken-Notdienstes ist eines der dichtesten und zuverlässigsten Versorgungsnetze weltweit:
+        </p>
+        <div class="stats-showcase">
+          <div class="stat-pill">
+            <strong>~17.000 bis 17.500</strong>
+            <span>Öffentliche Apotheken gesamt in Deutschland</span>
+          </div>
+          <div class="stat-pill">
+            <strong>~900 Apotheken</strong>
+            <span>Gleichzeitig in jeder einzelnen Nacht im Notdiensteinsatz</span>
+          </div>
+          <div class="stat-pill">
+            <strong>> 330.000</strong>
+            <span>Geleistete 24h-Notdienstschichten pro Kalenderjahr</span>
+          </div>
+          <div class="stat-pill">
+            <strong>~20.000 Patienten</strong>
+            <span>Werden in Deutschland pro Nacht im Notdienst versorgt</span>
+          </div>
+        </div>
+
+        <h3>Entfernungsradien in Stadt und Land</h3>
+        <p>
+          Die Landesapothekerkammern optimieren die Dienstpläne so, dass kein Bürger unzumutbare Wege zurücklegen muss:
+        </p>
+        <ul>
+          <li><strong>In Großstädten und Ballungsräumen</strong> (z.B. Berlin, München, Hamburg, Köln, Frankfurt) beträgt der Anfahrtsweg zur nächsten Notdienst-Apotheke meist nur <strong>wenige Kilometer (in der Regel unter 5 bis 10 km)</strong>.</li>
+          <li><strong>In ländlichen Gebieten</strong> und Flächenlandkreisen können die Distanzen naturgemäß größer sein; die Kammerrichtlinien sehen hier einen Zielkorridor von <strong>maximal 20 bis 25 km</strong> Anfahrtsweg vor.</li>
+        </ul>
+      </section>
+
+      <!-- Section 6 -->
+      <section id="offizielle-wege" class="guide-section">
+        <h2>6. Wie finde ich die Notdienstapotheke in Echtzeit? (Offizielle Wege)</h2>
+        <p>
+          Um zu jeder Tages- und Nachtzeit garantiert die richtige, geöffnete Notapotheke anzusteuern, stehen in Deutschland folgende behördlich verifizierte Informationswege zur Verfügung:
+        </p>
+        <div class="channels-grid">
+          <div class="channel-card">
+            <span class="channel-icon">🌐</span>
+            <h4>Offizielles Bundesportal aponet.de</h4>
+            <p>
+              Das offizielle Portal der deutschen Apothekerschaft bietet unter <a href="https://www.aponet.de/notdienstsuche" target="_blank" rel="noopener noreferrer nofollow">aponet.de/notdienstsuche</a> eine sekundengenaue Suche nach Postleitzahl oder Ortsname.
+            </p>
+          </div>
+          <div class="channel-card">
+            <span class="channel-icon">📜</span>
+            <h4>Gesetzlicher Schaufenster-Aushang (§ 23 Abs. 5 ApBetrO)</h4>
+            <p>
+              Jede geschlossene Apotheke in Deutschland ist <em>gesetzlich verpflichtet</em>, an gut sichtbarer Stelle einen aktuellen Aushang mit Name, Adresse und Telefonnummer der nächstgelegenen Notdienst-Apotheken anzubringen.
+            </p>
+          </div>
+          <div class="channel-card">
+            <span class="channel-icon">📞</span>
+            <h4>Kostenlose Festnetz-Hotline</h4>
+            <p>
+              Vom deutschen Festnetz aus kostenfrei erreichbar unter: <br />
+              <a href="tel:08000022833"><strong>0800 00 22 8 33</strong></a> (automatische Sprachansage).
+            </p>
+          </div>
+          <div class="channel-card">
+            <span class="channel-icon">📱</span>
+            <h4>Mobilfunk-Kurzwahl 22 8 33</h4>
+            <p>
+              Ohne Vorwahl vom Handy aus erreichbar: <a href="tel:22833"><strong>22 8 33</strong></a> (Sprachdienst oder SMS mit PLZ an 22 8 33; gebührenpflichtig, ca. 0,69 €/Min bzw. SMS).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 7 -->
+      <section id="eu-rezepte" class="guide-section">
+        <h2>7. Sonderfall: Gültigkeit italienischer & ausländischer EU-Rezepte in Deutschland</h2>
+        <p>
+          Viele Urlauber, Pendler und Expats stehen vor der Frage: <em>Kann ich ein Rezept, das ein Arzt in Italien oder einem anderen EU-Land ausgestellt hat, nachts in einer deutschen Apotheke einlösen?</em>
+        </p>
+        <p>
+          <strong>Die Antwort lautet: Ja, grundsätzlich ja!</strong> Die grenzüberschreitende Anerkennung von ärztlichen Verschreibungen ist im Unionsrecht und im deutschen Recht klar geregelt:
+        </p>
+        <div class="legal-box my-2">
+          <h4>Rechtliche Grundlagen der EU-weiten Rezeptanerkennung:</h4>
+          <ul>
+            <li><strong>EU-Patientenrechte-Richtlinie 2011/24/EU (Art. 11)</strong></li>
+            <li><strong>§ 2 Abs. 1a der Arzneimittelverschreibungsverordnung (AMVV)</strong> in Deutschland</li>
+          </ul>
+        </div>
+
+        <h3>Zwingende Voraussetzungen für ein gültiges EU-Rezept:</h3>
+        <p>Damit der deutsche Apotheker das ausländische Rezept beliefern darf, müssen folgende Angaben zwingend in lesbarer Form vorliegen:</p>
+        <ol class="checklist">
+          <li><strong>Vollständige Patientenangaben:</strong> Vor- und Nachname (vollständig ausgeschrieben) sowie das Geburtsdatum.</li>
+          <li><strong>Ausstellungsdatum</strong> der Verschreibung.</li>
+          <li><strong>Vollständige Arztangaben:</strong> Name und Vorname des Arztes, Berufsbezeichnung, Anschrift der Praxis (inklusive Land), direkte Kontaktdaten (Telefonnummer mit internationaler Vorwahl oder E-Mail-Adresse) sowie eigenhändige Unterschrift oder qualifizierte elektronische Signatur.</li>
+          <li><strong>Wirkstoffbezeichnung nach INN:</strong> Da Handelsnamen im Ausland (z.B. in Italien) oft gänzlich anders lauten als in Deutschland, muss der internationale Freiname (<strong>INN - International Nonproprietary Name</strong>), die Darreichungsform (z.B. Tabletten, Sirup), die Wirkstärke (z.B. 500 mg), die Packungsgröße und die Dosierung angegeben sein.</li>
+        </ol>
+
+        <h3>Wie läuft die Abrechnung in der deutschen Notapotheke?</h3>
+        <p>
+          Ein ausländisches EU-Rezept wird in Deutschland verkehrsrechtlich wie ein <strong>Privatrezept</strong> behandelt:
+        </p>
+        <ul>
+          <li>Der Patient bezahlt das Medikament sowie die Notdienstgebühr (2,50 €) vor Ort zunächst selbst (in bar oder per Karte).</li>
+          <li>Die Apotheke stempelt und quittiert das Rezept und händigt eine detaillierte Quittung (Rezeptabrechnungsbeleg) aus.</li>
+          <li>Nach der Rückkehr kann der Patient diese Belege bei seiner heimischen Krankenkasse (z.B. bei der italienischen <em>ASL / Servizio Sanitario Nazionale</em>) einreichen, um die Erstattung nach den landesüblichen Sätzen zu beantragen.</li>
+        </ul>
+
+        <div class="alert-warning my-2">
+          <strong>⚠️ Wichtige Ausnahmen & Einschränkungen:</strong><br />
+          Rezepte über <strong>Betäubungsmittel (BTM)</strong>, stark wirksame Suchtmittel oder bestimmte Sonderarzneimittel unterliegen strengsten nationalen Gesetzen und dürfen auf Basis eines ausländischen Rezepts in Deutschland in der Regel <em>nicht</em> beliefert werden. Zudem sind rein digitale ausländische E-Rezepte noch nicht mit der deutschen Telematikinfrastruktur verknüpft; das Rezept muss daher physisch in Papierform vorgelegt werden.
+        </div>
+      </section>
+    </article>
+
+    <!-- Bottom Action CTA -->
+    <div class="bottom-cta my-4">
+      <h2>Jetzt diensthabende Notdienst-Apotheke finden</h2>
+      <p>Nutzen Sie unsere Umkreissuche oder die offizielle Verlinkung zu aponet.de für tagesaktuelle Echtzeit-Ergebnisse.</p>
+      <div class="cta-buttons">
+        <a href="/in-meiner-naehe/" class="btn btn-primary btn-lg">Apotheke in meiner Nähe finden</a>
+        <a href="https://www.aponet.de/notdienstsuche" target="_blank" rel="noopener noreferrer nofollow" class="btn btn-secondary btn-lg">Zum offiziellen Portal aponet.de ↗</a>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .guide-container {
+    max-width: 860px;
+  }
+  .guide-header {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2rem;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+  }
+  .guide-kicker {
+    display: inline-block;
+    background: #fee2e2;
+    color: #dc2626;
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    margin-bottom: 0.8rem;
+  }
+  .guide-title {
+    font-size: clamp(2rem, 4.5vw, 2.8rem);
+    font-weight: 900;
+    line-height: 1.2;
+    margin: 0 0 1rem;
+    color: var(--ink);
+  }
+  .guide-lead {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--ink-secondary);
+    margin: 0;
+  }
+  .facts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .fact-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.2rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .fact-num {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #dc2626;
+    margin-bottom: 4px;
+  }
+  .fact-label {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.35;
+  }
+  .toc-box {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.5rem 1.8rem;
+  }
+  .toc-box h2 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 0 0 0.8rem;
+    color: var(--ink);
+  }
+  .toc-list {
+    margin: 0;
+    padding-left: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.95rem;
+  }
+  .toc-list a {
+    color: #dc2626;
+    text-decoration: underline;
+  }
+  .guide-article {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2rem;
+    box-shadow: var(--shadow-sm);
+    line-height: 1.7;
+    color: var(--ink-secondary);
+  }
+  .guide-section {
+    margin-bottom: 3rem;
+  }
+  .guide-section:last-child {
+    margin-bottom: 0;
+  }
+  .guide-section h2 {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--ink);
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--line);
+  }
+  .guide-section h3 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 1.6rem 0 0.6rem;
+  }
+  .legal-quote {
+    background: var(--surface-2);
+    border-left: 4px solid #dc2626;
+    margin: 1.2rem 0;
+    padding: 1rem 1.4rem;
+    font-style: italic;
+    color: var(--ink);
+    border-radius: 0 6px 6px 0;
+  }
+  .legal-quote cite {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85rem;
+    font-style: normal;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .info-callout {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: var(--radius-md);
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+    color: #166534;
+  }
+  .info-callout h4 {
+    margin: 0 0 0.6rem;
+    font-size: 1.05rem;
+    color: #14532d;
+  }
+  .info-callout ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.92rem;
+  }
+  .allowed-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+    margin: 1.5rem 0;
+  }
+  @media (max-width: 650px) {
+    .allowed-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .allowed-box {
+    border-radius: var(--radius-md);
+    padding: 1.2rem 1.4rem;
+    font-size: 0.92rem;
+  }
+  .allowed-box h3 {
+    margin: 0 0 0.8rem;
+    font-size: 1.05rem;
+  }
+  .allowed-box ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .allowed-box.yes {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+  }
+  .allowed-box.no {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+  }
+  .noctu-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #f8fafc;
+    border: 2px dashed #0284c7;
+    border-radius: var(--radius-md);
+    padding: 1.2rem 1.4rem;
+    margin: 1.2rem 0;
+  }
+  :global([data-theme="dark"]) .noctu-card {
+    background: var(--surface-2);
+  }
+  .noctu-badge {
+    background: #0284c7;
+    color: #ffffff;
+    font-size: 1.4rem;
+    font-weight: 900;
+    padding: 8px 14px;
+    border-radius: 6px;
+    font-family: monospace;
+    letter-spacing: 0.05em;
+  }
+  .noctu-desc {
+    flex: 1;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--ink-secondary);
+  }
+  .stats-showcase {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin: 1.4rem 0;
+  }
+  .stat-pill {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    text-align: center;
+  }
+  .stat-pill strong {
+    display: block;
+    font-size: 1.3rem;
+    color: #dc2626;
+    margin-bottom: 4px;
+  }
+  .stat-pill span {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.3;
+  }
+  .channels-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+    margin: 1.4rem 0;
+  }
+  .channel-card {
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-md);
+    padding: 1.2rem;
+  }
+  .channel-icon {
+    font-size: 1.8rem;
+    margin-bottom: 6px;
+    display: inline-block;
+  }
+  .channel-card h4 {
+    margin: 0 0 6px;
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--ink);
+  }
+  .channel-card p {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+  .checklist {
+    padding-left: 1.4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.95rem;
+  }
+  .alert-warning {
+    background: #fffbeb;
+    border-left: 4px solid #f59e0b;
+    padding: 1rem 1.4rem;
+    border-radius: 4px;
+    color: #92400e;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .bottom-cta {
+    background: #1e293b;
+    color: #ffffff;
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2rem;
+    text-align: center;
+  }
+  .bottom-cta h2 {
+    font-size: 1.8rem;
+    font-weight: 900;
+    margin: 0 0 0.6rem;
+  }
+  .bottom-cta p {
+    font-size: 1.05rem;
+    color: #cbd5e1;
+    max-width: 580px;
+    margin: 0 auto 1.5rem;
+  }
+  .cta-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-lg {
+    padding: 12px 22px;
+    font-size: 1rem;
+    border-radius: var(--radius-full);
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+  }
+  .btn-primary {
+    background: #dc2626;
+    color: #ffffff;
+  }
+  .btn-primary:hover {
+    background: #b91c1c;
+  }
+  .btn-secondary {
+    background: #334155;
+    color: #ffffff;
+    border: 1px solid #475569;
+  }
+  .btn-secondary:hover {
+    background: #475569;
+  }
+</style>
