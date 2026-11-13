@@ -119,7 +119,7 @@ const osmDirUrl = hasCoords
           <span>Genauer Standort verifiziert</span>
         </div>
         <div class="map-attr-note">
-          Karte: &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> & CARTO
+          Karte: &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap Mitwirkende</a>
         </div>
       </div>
     </div>
@@ -238,21 +238,20 @@ const osmDirUrl = hasCoords
         attributionControl: false
       }).setView([lat, lon], 16);
 
-      // 2. High-res Kacheln: CARTO Voyager
-      const tileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+      // 2. Offizielle, freie OpenStreetMap-Kacheln (garantiert ohne API-Key-Sperre oder Wasserzeichen)
+      const tileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
-        subdomains: 'abcd',
-        attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a> Mitwirkende'
       });
       tileLayer.addTo(map);
 
-      // Bei Fehler auf Standard-OSM-Kacheln ausweichen
+      // Bei Bedarf Fallback auf OpenStreetMap Deutschland
       tileLayer.on('tileerror', function() {
         if (!map._osmFallbackAdded) {
           map._osmFallbackAdded = true;
-          L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          L.tileLayer('https://tile.openstreetmap.de/{z}/{x}/{y}.png', {
             maxZoom: 19,
-            attribution: '&copy; OpenStreetMap contributors'
+            attribution: '&copy; OpenStreetMap Mitwirkende'
           }).addTo(map);
         }
       });
