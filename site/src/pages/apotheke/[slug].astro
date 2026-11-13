@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import LiveDateBadge from '../../components/LiveDateBadge.astro';
 import AdSlot from '../../components/AdSlot.astro';
+import SinglePharmacyMap from '../../components/SinglePharmacyMap.astro';
 import bundeslaenderData from '../../data/bundeslaender.json';
 
 export async function getStaticPaths() {
@@ -122,11 +123,11 @@ if (pharmacy.lat && pharmacy.lon) {
           <span>Kammer-Portal ({bundesland.code}) ↗</span>
         </a>
 
-        <a href={mapUrl} target="_blank" rel="noopener noreferrer" class="btn btn-route btn-lg">
+        <a href="#anfahrt" class="btn btn-route btn-lg" title="Zur interaktiven Karte und Routenplaner springen">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M9 18l6-6-6-6"/>
+            <polygon points="3 11 22 2 13 21 11 13 3 11"/>
           </svg>
-          <span>Route</span>
+          <span>Karte & Anfahrt ↓</span>
         </a>
       </div>
 
@@ -186,6 +187,9 @@ if (pharmacy.lat && pharmacy.lon) {
         </div>
       </div>
     </div>
+
+    <!-- Interactive Map & Route Planner -->
+    <SinglePharmacyMap pharmacy={pharmacy} bundeslandName={bundesland.name} />
 
     <!-- Ad Slot -->
     <div class="my-4">
